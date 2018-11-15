@@ -41,7 +41,20 @@ namespace nykk
 	bool TestPass::runOnFunction(llvm::Function& func)
 	{
 		llvm::errs() << __FUNCTION__ << " : " << func.getName() << "\n";
+		llvm::errs() << "    " << "bbs : " << func.getBasicBlockList().size() << "\n";
 
-		return false;
+		if (func.getBasicBlockList().size() < 3)
+		{
+			return false;
+		}
+
+		// Swap 2nd and 3rd basic blocks.
+		llvm::BasicBlock& entry_bb = func.getEntryBlock();
+		llvm::BasicBlock* bb1 = entry_bb.getNextNode();
+		llvm::BasicBlock* bb2 = bb1->getNextNode();
+
+		bb1->moveAfter(bb2);
+
+		return true;
 	}
 }
