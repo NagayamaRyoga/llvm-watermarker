@@ -6,9 +6,9 @@
 namespace
 {
 	/**
-	 * @brief      First watermarker pass.
+	 * @brief      Simplest IR analyzer.
 	 */
-	class TestPass
+	class CounterPass
 		: public llvm::FunctionPass
 	{
 	public:
@@ -17,19 +17,19 @@ namespace
 		/**
 		 * @brief      Constructor.
 		 */
-		explicit TestPass()
+		explicit CounterPass()
 			: FunctionPass(ID)
 		{
 		}
 
 		// Uncopyable, unmovable.
-		TestPass(const TestPass&) =delete;
-		TestPass(TestPass&&) =delete;
+		CounterPass(const CounterPass&) =delete;
+		CounterPass(CounterPass&&) =delete;
 
-		TestPass& operator=(const TestPass&) =delete;
-		TestPass& operator=(TestPass&&) =delete;
+		CounterPass& operator=(const CounterPass&) =delete;
+		CounterPass& operator=(CounterPass&&) =delete;
 
-		~TestPass() =default;
+		~CounterPass() =default;
 
 		/**
 		 * @brief      Initialization before pass is run.
@@ -40,7 +40,8 @@ namespace
 		 */
 		bool doInitialization(llvm::Module& module) override
 		{
-			llvm::errs() << __FUNCTION__ << " : " << module.getName() << "\n";
+			llvm::errs()
+				<< "[Counter - module   ] start: " << module.getName() << "\n";
 
 			return false;
 		}
@@ -54,7 +55,8 @@ namespace
 		 */
 		bool doFinalization(llvm::Module& module) override
 		{
-			llvm::errs() << __FUNCTION__ << " : " << module.getName() << "\n";
+			llvm::errs()
+				<< "[Counter - module   ] finish: " << module.getName() << "\n";
 
 			return false;
 		}
@@ -68,30 +70,18 @@ namespace
 		 */
 		bool runOnFunction(llvm::Function& func) override
 		{
-			llvm::errs() << __FUNCTION__ << " : " << func.getName() << "\n";
-			llvm::errs() << "    " << "bbs : " << func.getBasicBlockList().size() << "\n";
+			llvm::errs()
+				<< "[Counter - function ] '" << func.getName() << "' Basic blocks: " << func.getBasicBlockList().size() << "\n";
 
-			if (func.getBasicBlockList().size() < 3)
-			{
-				return false;
-			}
-
-			// Swap 2nd and 3rd basic blocks.
-			llvm::BasicBlock& entry_bb = func.getEntryBlock();
-			llvm::BasicBlock* bb1 = entry_bb.getNextNode();
-			llvm::BasicBlock* bb2 = bb1->getNextNode();
-
-			bb1->moveAfter(bb2);
-
-			return true;
+			return false;
 		}
 	};
 
-	char TestPass::ID;
+	char CounterPass::ID;
 
 	// Register pass.
-	llvm::RegisterPass<TestPass> test_pass_registry {
-		"testpass",
-		"Test pass",
+	llvm::RegisterPass<CounterPass> counter_pass_registry {
+		"counterpass",
+		"IR analyzer",
 	};
 }

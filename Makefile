@@ -16,8 +16,8 @@ LDFLAGS := \
 
 all: testpass.so
 
-testpass.so: src/nykk/pass/TestPass.o
-	${CXX} ${CXXFLAGS} -shared -o $@ $< ${LDFLAGS}
+testpass.so: src/nykk/pass/TestPass.o src/nykk/pass/CounterPass.o
+	${CXX} ${CXXFLAGS} -shared -o $@ $^ ${LDFLAGS}
 
 clean:
 	${RM} *.so src/*/*.o
