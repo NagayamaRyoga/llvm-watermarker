@@ -19,6 +19,7 @@ namespace
 		 */
 		explicit BlockCounterPass()
 			: FunctionPass(ID)
+			, module_name_()
 		{
 		}
 
@@ -40,8 +41,7 @@ namespace
 		 */
 		bool doInitialization(llvm::Module& module) override
 		{
-			llvm::errs()
-				<< "[BlockCounter - module   ] start: " << module.getName() << "\n";
+			module_name_ = module.getName();
 
 			return false;
 		}
@@ -55,8 +55,7 @@ namespace
 		 */
 		bool doFinalization(llvm::Module& module) override
 		{
-			llvm::errs()
-				<< "[BlockCounter - module   ] finish: " << module.getName() << "\n";
+			module_name_.clear();
 
 			return false;
 		}
@@ -71,10 +70,13 @@ namespace
 		bool runOnFunction(llvm::Function& func) override
 		{
 			llvm::errs()
-				<< "[BlockCounter - function ] '" << func.getName() << "' Basic blocks: " << func.getBasicBlockList().size() << "\n";
+				<< "[BlockCounter - '" << func.getName() << "' in " << module_name_ << "] Basic blocks: " << func.getBasicBlockList().size() << "\n";
 
 			return false;
 		}
+
+	private:
+		std::string module_name_;
 	};
 
 	char BlockCounterPass::ID;
