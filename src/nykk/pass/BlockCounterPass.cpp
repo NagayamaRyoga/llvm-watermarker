@@ -8,7 +8,7 @@ namespace
 	/**
 	 * @brief      Simplest IR analyzer.
 	 */
-	class CounterPass
+	class BlockCounterPass
 		: public llvm::FunctionPass
 	{
 	public:
@@ -17,19 +17,19 @@ namespace
 		/**
 		 * @brief      Constructor.
 		 */
-		explicit CounterPass()
+		explicit BlockCounterPass()
 			: FunctionPass(ID)
 		{
 		}
 
 		// Uncopyable, unmovable.
-		CounterPass(const CounterPass&) =delete;
-		CounterPass(CounterPass&&) =delete;
+		BlockCounterPass(const BlockCounterPass&) =delete;
+		BlockCounterPass(BlockCounterPass&&) =delete;
 
-		CounterPass& operator=(const CounterPass&) =delete;
-		CounterPass& operator=(CounterPass&&) =delete;
+		BlockCounterPass& operator=(const BlockCounterPass&) =delete;
+		BlockCounterPass& operator=(BlockCounterPass&&) =delete;
 
-		~CounterPass() =default;
+		~BlockCounterPass() =default;
 
 		/**
 		 * @brief      Initialization before pass is run.
@@ -41,7 +41,7 @@ namespace
 		bool doInitialization(llvm::Module& module) override
 		{
 			llvm::errs()
-				<< "[Counter - module   ] start: " << module.getName() << "\n";
+				<< "[BlockCounter - module   ] start: " << module.getName() << "\n";
 
 			return false;
 		}
@@ -56,7 +56,7 @@ namespace
 		bool doFinalization(llvm::Module& module) override
 		{
 			llvm::errs()
-				<< "[Counter - module   ] finish: " << module.getName() << "\n";
+				<< "[BlockCounter - module   ] finish: " << module.getName() << "\n";
 
 			return false;
 		}
@@ -71,17 +71,17 @@ namespace
 		bool runOnFunction(llvm::Function& func) override
 		{
 			llvm::errs()
-				<< "[Counter - function ] '" << func.getName() << "' Basic blocks: " << func.getBasicBlockList().size() << "\n";
+				<< "[BlockCounter - function ] '" << func.getName() << "' Basic blocks: " << func.getBasicBlockList().size() << "\n";
 
 			return false;
 		}
 	};
 
-	char CounterPass::ID;
+	char BlockCounterPass::ID;
 
 	// Register pass.
-	llvm::RegisterPass<CounterPass> counter_pass_registry {
-		"counterpass",
+	llvm::RegisterPass<BlockCounterPass> pass_registry {
+		"count-block",
 		"IR analyzer",
 	};
 }
