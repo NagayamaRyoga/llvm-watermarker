@@ -8,7 +8,8 @@ CXXFLAGS := \
 	-Wextra \
 	-pedantic \
 	-Werror \
-	${LLVM_INCLUDE_DIRS:%=-I%}
+	${LLVM_INCLUDE_DIRS:%=-I%} \
+	-fPIC
 
 LDFLAGS := \
 	$(shell llvm-config-6.0 --ldflags) \
@@ -38,4 +39,4 @@ test_pass: test/Test.o
 	${CXX} ${CXXFLAGS} -shared -o $@ $^ ${LDFLAGS}
 
 clean:
-	${RM} *.so test_pass src/*/*.o test/*.o
+	${RM} *.so test_pass src/*/*.o src/*/*/*.o test/*.o

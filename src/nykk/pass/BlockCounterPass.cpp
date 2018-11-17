@@ -53,7 +53,7 @@ namespace
 		 *
 		 * @return     ?
 		 */
-		bool doFinalization(llvm::Module& module) override
+		bool doFinalization([[maybe_unused]] llvm::Module& module) override
 		{
 			module_name_.clear();
 
