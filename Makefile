@@ -1,3 +1,5 @@
+LLVM_INCLUDE_DIRS := $(shell llvm-config-6.0 --includedir)
+
 CXX := g++
 
 CXXFLAGS := \
@@ -6,18 +8,34 @@ CXXFLAGS := \
 	-Wextra \
 	-pedantic \
 	-Werror \
-	$(shell llvm-config-6.0 --cxxflags)
+	${LLVM_INCLUDE_DIRS:%=-I%}
 
 LDFLAGS := \
 	$(shell llvm-config-6.0 --ldflags) \
 	$(shell llvm-config-6.0 --libs)
 
-.PHONY: all clean
+.PHONY: all test clean
 
-all: testpass.so
+all: testpass.so test_pass
 
-testpass.so: src/nykk/pass/TestPass.o src/nykk/pass/BlockCounterPass.o
+test: test_pass
+	./test_pass
+
+testpass.so: \
+	src/nykk/pass/TestPass.o \
+	src/nykk/pass/BlockCounterPass.o \
+	src/nykk/pass/BlockWatermarkPass.o
+
+test/Test.o: \
+	test/Test.cpp \
+	test/TestPermutationTable.hpp \
+	src/nykk/PermutationTable.hpp
+
+test_pass: test/Test.o
+	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
+
+%.so:
 	${CXX} ${CXXFLAGS} -shared -o $@ $^ ${LDFLAGS}
 
 clean:
-	${RM} *.so src/*/*.o
+	${RM} *.so test_pass src/*/*.o test/*.o
