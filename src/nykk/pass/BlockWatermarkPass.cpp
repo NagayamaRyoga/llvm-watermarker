@@ -169,7 +169,7 @@ namespace
 			for (; block_index + partition_opt < blocks.size(); block_index += partition_opt)
 			{
 				// Part of watermark to embed.
-				const auto data = (watermark_opt >> (bit_pos_ % 32)) & bit_mask;
+				const auto data = (watermark_opt >> bit_pos_) & bit_mask;
 
 				// Shuffles each `partition_opt` blocks.
 				for (std::size_t i = 0; i < partition_opt; i++)
@@ -182,7 +182,7 @@ namespace
 
 				num_embedded_bits += possible_embedding_bits[partition_opt];
 				bit_pos_ += possible_embedding_bits[partition_opt];
-				bit_pos_ %= 32;
+				bit_pos_ %= sizeof(std::uint32_t) * 8;
 			}
 
 			// Inserts rest blocks.
