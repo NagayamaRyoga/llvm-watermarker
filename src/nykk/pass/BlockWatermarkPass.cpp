@@ -144,7 +144,7 @@ namespace
 				llvm::errs()
 					<< "    function '" << func.getName() << "' is too small to watermark" << "\n";
 
-				return 0;
+				return false;
 			}
 
 			// Table of {log2 x! | x < 13}
