@@ -21,25 +21,22 @@ namespace
 		{
 			try
 			{
-				if constexpr (std::is_unsigned_v<Integer>)
+				const auto v = [](llvm::StringRef s)
 				{
-					const auto v = std::stoull(arg.str());
-
-					if (Min <= v && v <= Max)
+					if constexpr (std::is_unsigned_v<Integer>)
 					{
-						val = static_cast<Integer>(v);
-						return false;
+						return std::stoull(s.str());
 					}
-				}
-				else
+					else
+					{
+						return std::stoll(s.str());
+					}
+				}(arg);
+
+				if (Min <= v && v <= Max)
 				{
-					const auto v = std::stoll(arg.str());
-
-					if (Min <= v && v <= Max)
-					{
-						val = static_cast<Integer>(v);
-						return false;
-					}
+					val = static_cast<Integer>(v);
+					return false;
 				}
 			}
 			catch ([[maybe_unused]] const std::exception& e)
