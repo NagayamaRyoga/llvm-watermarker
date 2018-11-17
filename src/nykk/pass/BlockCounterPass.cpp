@@ -70,7 +70,7 @@ namespace
 		bool runOnFunction(llvm::Function& func) override
 		{
 			llvm::errs()
-				<< "[BlockCounter - '" << func.getName() << "' in " << module_name_ << "] Basic blocks: " << func.getBasicBlockList().size() << "\n";
+				<< "[BlockCounter - '" << func.getName() << "' in " << module_name_ << "] Basic blocks: " << func.size() << "\n";
 
 			return false;
 		}
