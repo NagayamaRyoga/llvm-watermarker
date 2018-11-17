@@ -5,6 +5,14 @@
 
 namespace
 {
+	const llvm::cl::opt<int> test_opt
+	{
+		"test_opt",
+		llvm::cl::desc("Test pass option"),
+		llvm::cl::value_desc("test"),
+		llvm::cl::init(10),
+	};
+
 	/**
 	 * @brief      First watermarker pass.
 	 */
@@ -41,6 +49,7 @@ namespace
 		bool doInitialization(llvm::Module& module) override
 		{
 			llvm::errs() << __FUNCTION__ << " : " << module.getName() << "\n";
+			llvm::errs() << "test_opt: " << test_opt << "\n";
 
 			return false;
 		}
@@ -90,7 +99,8 @@ namespace
 	char TestPass::ID;
 
 	// Register pass.
-	llvm::RegisterPass<TestPass> test_pass_registry {
+	const llvm::RegisterPass<TestPass> pass_registry =
+	{
 		"testpass",
 		"Test pass",
 	};

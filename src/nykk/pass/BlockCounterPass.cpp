@@ -3,6 +3,8 @@
 #include <llvm/Pass.h>
 #include <llvm/Support/raw_ostream.h>
 
+#include <llvm/Support/CommandLine.h>
+
 namespace
 {
 	/**
@@ -82,7 +84,8 @@ namespace
 	char BlockCounterPass::ID;
 
 	// Register pass.
-	llvm::RegisterPass<BlockCounterPass> pass_registry {
+	const llvm::RegisterPass<BlockCounterPass> pass_registry =
+	{
 		"count-block",
 		"IR analyzer",
 	};
