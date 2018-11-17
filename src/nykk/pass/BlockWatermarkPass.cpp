@@ -7,6 +7,13 @@
 
 namespace
 {
+	/**
+	 * @brief      Command line option analyzer.
+	 *
+	 * @tparam     Integer  Integer type.
+	 * @tparam     Min      Minimum value to accept.
+	 * @tparam     Max      Maximum value to accept.
+	 */
 	template <typename Integer, Integer Min, Integer Max>
 	class RangeOptParser
 		: public llvm::cl::parser<Integer>
@@ -16,7 +23,7 @@ namespace
 	public:
 		using llvm::cl::parser<Integer>::parser;
 
-		// Return `true` on error.
+		// Returns `true` on error.
 		bool parse(llvm::cl::Option& o, [[maybe_unused]] llvm::StringRef arg_name, llvm::StringRef arg, Integer& val)
 		{
 			try
@@ -153,7 +160,7 @@ namespace
 			const auto blocks = std::vector<std::reference_wrapper<llvm::BasicBlock>>(std::begin(func), std::end(func));
 			auto last_block = &func.getEntryBlock();
 
-			// Embedding.
+			// Embeds watermark.
 			std::size_t num_embedded_bits = 0;
 			std::size_t block_index = 1; // Without entry block.
 
@@ -161,10 +168,10 @@ namespace
 
 			for (; block_index + partition_opt < blocks.size(); block_index += partition_opt)
 			{
-				// Watermark to embed.
+				// Part of watermark to embed.
 				const auto data = (watermark_opt >> (bit_pos_ % 32)) & bit_mask;
 
-				// Shuffle each `partition_opt` blocks.
+				// Shuffles each `partition_opt` blocks.
 				for (std::size_t i = 0; i < partition_opt; i++)
 				{
 					const auto index = block_index + perm_table_.at(data).at(i);
@@ -178,7 +185,7 @@ namespace
 				bit_pos_ %= 32;
 			}
 
-			// Insert rest blocks.
+			// Inserts rest blocks.
 			for (; block_index < blocks.size(); block_index++)
 			{
 				blocks[block_index].get().moveAfter(last_block);
@@ -199,7 +206,7 @@ namespace
 
 	char BlockWatermarkPass::ID;
 
-	// Register pass.
+	// Registers pass.
 	const llvm::RegisterPass<BlockWatermarkPass> pass_registry =
 	{
 		"block-wm",

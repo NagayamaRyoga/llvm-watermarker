@@ -81,7 +81,7 @@ namespace
 
 	char BlockCounterPass::ID;
 
-	// Register pass.
+	// Registers pass.
 	const llvm::RegisterPass<BlockCounterPass> pass_registry =
 	{
 		"count-block",

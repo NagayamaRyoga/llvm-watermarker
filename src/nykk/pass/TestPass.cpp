@@ -85,7 +85,7 @@ namespace
 				return false;
 			}
 
-			// Swap 2nd and 3rd basic blocks.
+			// Swaps 2nd and 3rd basic blocks.
 			llvm::BasicBlock& entry_bb = func.getEntryBlock();
 			llvm::BasicBlock* bb1 = entry_bb.getNextNode();
 			llvm::BasicBlock* bb2 = bb1->getNextNode();
@@ -98,7 +98,7 @@ namespace
 
 	char TestPass::ID;
 
-	// Register pass.
+	// Registers pass.
 	const llvm::RegisterPass<TestPass> pass_registry =
 	{
 		"testpass",
