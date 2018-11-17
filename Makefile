@@ -17,10 +17,10 @@ LDFLAGS := \
 
 .PHONY: all test clean
 
-all: nykk.so test_pass
+all: nykk.so
 
-test: test_pass
-	./test_pass
+test:
+	${MAKE} -C test run
 
 nykk.so: \
 	src/nykk/pass/TestPass.o \
@@ -31,16 +31,9 @@ src/nykk/pass/BlockWatermarkPass.o: \
 	src/nykk/pass/BlockWatermarkPass.cpp \
 	src/nykk/PermutationTable.hpp
 
-test/Test.o: \
-	test/Test.cpp \
-	test/TestPermutationTable.hpp \
-	src/nykk/PermutationTable.hpp
-
-test_pass: test/Test.o
-	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
-
 %.so:
 	${CXX} ${CXXFLAGS} -shared -o $@ $^ ${LDFLAGS}
 
 clean:
-	${RM} *.so test_pass src/*/*.o src/*/*/*.o test/*.o
+	${MAKE} -C test clean
+	${RM} *.so src/*/*.o src/*/*/*.o
