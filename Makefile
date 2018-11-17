@@ -27,6 +27,10 @@ testpass.so: \
 	src/nykk/pass/BlockCounterPass.o \
 	src/nykk/pass/BlockWatermarkPass.o
 
+src/nykk/pass/BlockWatermarkPass.o: \
+	src/nykk/pass/BlockWatermarkPass.cpp \
+	src/nykk/PermutationTable.hpp
+
 test/Test.o: \
 	test/Test.cpp \
 	test/TestPermutationTable.hpp \
