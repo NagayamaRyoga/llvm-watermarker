@@ -17,12 +17,12 @@ LDFLAGS := \
 
 .PHONY: all test clean
 
-all: testpass.so test_pass
+all: nykk.so test_pass
 
 test: test_pass
 	./test_pass
 
-testpass.so: \
+nykk.so: \
 	src/nykk/pass/TestPass.o \
 	src/nykk/pass/BlockCounterPass.o \
 	src/nykk/pass/BlockWatermarkPass.o
