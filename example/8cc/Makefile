@@ -1,4 +1,4 @@
-WATERMARK := 0
+WATERMARK := 3
 
 CC := clang
 
@@ -71,7 +71,7 @@ test/stage1-wm/%-wm.ll: test/stage1-wm/%.ll
 
 test/stage1-wm/%.ll: 8cc/%.c
 	@mkdir -p ${@D}
-	clang -DBUILD_DIR='"${PWD}/8cc"' -o $@ -emit-llvm -S $<
+	clang -DBUILD_DIR='"${PWD}/8cc"' -O2 -o $@ -emit-llvm -S $<
 
 test/stage2-wm/%.o: 8cc/%.c 8cc-stage1-wm
 	@mkdir -p ${@D}
@@ -82,8 +82,10 @@ test/stage3-wm/%.o: 8cc/%.c 8cc-stage2-wm
 	./8cc-stage2-wm -DBUILD_DIR='"${PWD}/8cc"' -w -o $@ -c $<
 
 test: stage3 stage3-wm
+	objdump -D 8cc-stage1 > stage1.s
 	objdump -D 8cc-stage2 > stage2.s
 	objdump -D 8cc-stage3 > stage3.s
+	objdump -D 8cc-stage1-wm > stage1-wm.s
 	objdump -D 8cc-stage2-wm > stage2-wm.s
 	objdump -D 8cc-stage3-wm > stage3-wm.s
 
