@@ -19,8 +19,9 @@ LDFLAGS := \
 
 all: nykk.so example
 
-test:
+test: nykk.so
 	${MAKE} -C test run
+	${MAKE} -C example test
 
 example: nykk.so
 	${MAKE} -C example

@@ -5,10 +5,19 @@ LLS := ${SRCS:.c=.ll}
 LLS_0 := ${SRCS:%.c=%-0.ll}
 LLS_1 := ${SRCS:%.c=%-1.ll}
 LLS_2 := ${SRCS:%.c=%-2.ll}
+BINS := ${LLS:.ll=} ${LLS_0:.ll=} ${LLS_1:.ll=} ${LLS_2:.ll=}
 
-.PHONY: all clean
+.PHONY: all test clean
 
-all: ${LLS} ${LLS_0} ${LLS_1} ${LLS_2}
+all: ${BINS}
+
+test: ${BINS}
+	./fizzbuzz > fizzbuzz.txt
+	./fizzbuzz-0 > fizzbuzz-0.txt
+	./fizzbuzz-1 > fizzbuzz-1.txt
+	./fizzbuzz-2 > fizzbuzz-2.txt
+
+${BINS}: ${LLS} ${LLS_0} ${LLS_1} ${LLS_2}
 
 %.ll: %.c
 	clang -emit-llvm -S -O2 -o $@ $<
@@ -20,5 +29,8 @@ all: ${LLS} ${LLS_0} ${LLS_1} ${LLS_2}
 %-2.ll: %.ll
 	opt-6.0 -load ../nykk.so -block-wm -watermark=2 -S -o $@ $<
 
+%: %.ll
+	clang -o $@ $<
+
 clean:
-	${RM} *.ll
+	${RM} ${BINS} *.ll *.txt
