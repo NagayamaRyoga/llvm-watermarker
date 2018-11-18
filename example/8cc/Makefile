@@ -43,7 +43,7 @@ stage1-wm: 8cc-stage1-wm
 
 test/stage1/%.o: 8cc/%.c
 	@mkdir -p ${@D}
-	${CC} -DBUILD_DIR='"${PWD}/8cc"' -o $@ -c $<
+	${CC} -DBUILD_DIR='"${PWD}/8cc"' -O2 -o $@ -c $<
 
 test/stage2/%.o: 8cc/%.c 8cc-stage1
 	@mkdir -p ${@D}
