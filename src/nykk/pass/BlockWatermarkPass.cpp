@@ -166,7 +166,7 @@ namespace
 
 			const auto bit_mask = (1 << possible_embedding_bits[partition_opt]) - 1;
 
-			for (; block_index + partition_opt < blocks.size(); block_index += partition_opt)
+			for (; block_index + partition_opt <= blocks.size(); block_index += partition_opt)
 			{
 				// Part of watermark to embed.
 				const auto data = (watermark_opt >> bit_pos_) & bit_mask;
