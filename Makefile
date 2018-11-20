@@ -1,4 +1,4 @@
-LLVM_INCLUDE_DIRS := $(shell llvm-config-6.0 --includedir)
+LLVM_INCLUDE_DIRS := $(shell llvm-config --includedir)
 
 CXX := g++
 
@@ -12,8 +12,8 @@ CXXFLAGS := \
 	-fPIC
 
 LDFLAGS := \
-	$(shell llvm-config-6.0 --ldflags) \
-	$(shell llvm-config-6.0 --libs)
+	$(shell llvm-config --ldflags) \
+	$(shell llvm-config --libs)
 
 .PHONY: all test example clean
 
