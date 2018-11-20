@@ -82,12 +82,12 @@ test/stage3-wm/%.o: 8cc/%.c 8cc-stage2-wm
 	./8cc-stage2-wm -DBUILD_DIR="\"$$PWD/8cc\"" -w -o $@ -c $<
 
 test: stage3 stage3-wm
-	objdump -D 8cc-stage1 > stage1.s
-	objdump -D 8cc-stage2 > stage2.s
-	objdump -D 8cc-stage3 > stage3.s
-	objdump -D 8cc-stage1-wm > stage1-wm.s
-	objdump -D 8cc-stage2-wm > stage2-wm.s
-	objdump -D 8cc-stage3-wm > stage3-wm.s
+	objdump -D 8cc-stage1 > stage1-asm.s
+	objdump -D 8cc-stage2 > stage2-asm.s
+	objdump -D 8cc-stage3 > stage3-asm.s
+	objdump -D 8cc-stage1-wm > stage1-wm-asm.s
+	objdump -D 8cc-stage2-wm > stage2-wm-asm.s
+	objdump -D 8cc-stage3-wm > stage3-wm-asm.s
 
 .PRECIOUS: test/stage1-wm/%.ll test/stage1-wm/%-wm.ll
 
