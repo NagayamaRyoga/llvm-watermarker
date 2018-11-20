@@ -7,6 +7,12 @@
 
 namespace
 {
+	template <typename Integer>
+	struct RangeOptValue
+	{
+		Integer value;
+	};
+
 	/**
 	 * @brief      Command line option analyzer.
 	 *
@@ -16,52 +22,31 @@ namespace
 	 */
 	template <typename Integer, Integer Min, Integer Max>
 	class RangeOptParser
-		: public llvm::cl::parser<Integer>
+		: public llvm::cl::parser<RangeOptValue<Integer>>
 	{
 		static_assert(std::is_integral_v<Integer>);
 
 	public:
-		using llvm::cl::parser<Integer>::parser;
+		using llvm::cl::parser<RangeOptValue<Integer>>::parser;
 
 		// Returns `true` on error.
-		bool parse(llvm::cl::Option& o, [[maybe_unused]] llvm::StringRef arg_name, llvm::StringRef arg, Integer& val)
+		bool parse(llvm::cl::Option& o, llvm::StringRef arg_name, llvm::StringRef arg, RangeOptValue<Integer>& value)
 		{
-			try
+			if (arg.getAsInteger(0, value.value))
 			{
-				const auto v = [](llvm::StringRef s)
-				{
-					if constexpr (std::is_unsigned_v<Integer>)
-					{
-						return std::stoull(s.str());
-					}
-					else
-					{
-						return std::stoll(s.str());
-					}
-				}(arg);
-
-				if (Min <= v && v <= Max)
-				{
-					val = static_cast<Integer>(v);
-					return false;
-				}
-			}
-			catch ([[maybe_unused]] const std::exception& e)
-			{
+				return o.error("invalid argument '" + arg_name + "=" + arg + "'");
 			}
 
-			o.error("invalid argument '" + arg_name + "=" + arg + "'");
-
-			return true;
+			return false;
 		}
 	};
 
-	const llvm::cl::opt<std::size_t, false, RangeOptParser<std::size_t, 2, 10>> partition_opt
+	const llvm::cl::opt<RangeOptValue<std::size_t>, false, RangeOptParser<std::size_t, 2, 10>> partition_opt
 	{
 		"partition",
 		llvm::cl::desc("Block partition number (2 ~ 10 default 7)"),
 		llvm::cl::value_desc("size"),
-		llvm::cl::init(7),
+		llvm::cl::init(RangeOptValue<std::size_t> {7}),
 	};
 
 	const llvm::cl::opt<int> watermark_opt
@@ -111,7 +96,7 @@ namespace
 		bool doInitialization(llvm::Module& module) override
 		{
 			module_name_ = module.getName();
-			perm_table_ = nykk::create_permutation_table(partition_opt);
+			perm_table_ = nykk::create_permutation_table(partition_opt.getValue().value);
 			bit_pos_ = 0;
 
 			return false;
@@ -143,7 +128,7 @@ namespace
 			llvm::errs()
 				<< "[BlockWatermarker - '" << func.getName() << "' in " << module_name_ << "] Basic blocks: " << func.size() << "\n";
 
-			if (func.size() <= partition_opt)
+			if (func.size() <= partition_opt.getValue().value)
 			{
 				llvm::errs()
 					<< "    function '" << func.getName() << "' is too small to watermark" << "\n";
@@ -164,15 +149,15 @@ namespace
 			std::size_t num_embedded_bits = 0;
 			std::size_t block_index = 1; // Without entry block.
 
-			const auto bit_mask = (1 << possible_embedding_bits[partition_opt]) - 1;
+			const auto bit_mask = (1 << possible_embedding_bits[partition_opt.getValue().value]) - 1;
 
-			for (; block_index + partition_opt <= blocks.size(); block_index += partition_opt)
+			for (; block_index + partition_opt.getValue().value <= blocks.size(); block_index += partition_opt.getValue().value)
 			{
 				// Part of watermark to embed.
 				const auto data = (watermark_opt >> bit_pos_) & bit_mask;
 
 				// Shuffles each `partition_opt` blocks.
-				for (std::size_t i = 0; i < partition_opt; i++)
+				for (std::size_t i = 0; i < partition_opt.getValue().value; i++)
 				{
 					const auto index = block_index + perm_table_.at(data).at(i);
 
@@ -180,8 +165,8 @@ namespace
 					last_block = &blocks[index].get();
 				}
 
-				num_embedded_bits += possible_embedding_bits[partition_opt];
-				bit_pos_ += possible_embedding_bits[partition_opt];
+				num_embedded_bits += possible_embedding_bits[partition_opt.getValue().value];
+				bit_pos_ += possible_embedding_bits[partition_opt.getValue().value];
 				bit_pos_ %= sizeof(std::uint32_t) * 8;
 			}
 
