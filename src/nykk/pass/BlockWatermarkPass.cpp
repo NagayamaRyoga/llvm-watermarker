@@ -128,7 +128,9 @@ namespace
 			llvm::errs()
 				<< "[BlockWatermarker - '" << func.getName() << "' in " << module_name_ << "] Basic blocks: " << func.size() << "\n";
 
-			if (func.size() <= partition_opt.getValue().value)
+			const auto partition = partition_opt.getValue().value;
+
+			if (func.size() <= partition)
 			{
 				llvm::errs()
 					<< "    function '" << func.getName() << "' is too small to watermark" << "\n";
@@ -149,15 +151,15 @@ namespace
 			std::size_t num_embedded_bits = 0;
 			std::size_t block_index = 1; // Without entry block.
 
-			const auto bit_mask = (1 << possible_embedding_bits[partition_opt.getValue().value]) - 1;
+			const auto bit_mask = (1 << possible_embedding_bits[partition]) - 1;
 
-			for (; block_index + partition_opt.getValue().value <= blocks.size(); block_index += partition_opt.getValue().value)
+			for (; block_index + partition <= blocks.size(); block_index += partition)
 			{
 				// Part of watermark to embed.
 				const auto data = (watermark_opt >> bit_pos_) & bit_mask;
 
-				// Shuffles each `partition_opt` blocks.
-				for (std::size_t i = 0; i < partition_opt.getValue().value; i++)
+				// Shuffles each `partition` blocks.
+				for (std::size_t i = 0; i < partition; i++)
 				{
 					const auto index = block_index + perm_table_.at(data).at(i);
 
@@ -165,8 +167,8 @@ namespace
 					last_block = &blocks[index].get();
 				}
 
-				num_embedded_bits += possible_embedding_bits[partition_opt.getValue().value];
-				bit_pos_ += possible_embedding_bits[partition_opt.getValue().value];
+				num_embedded_bits += possible_embedding_bits[partition];
+				bit_pos_ += possible_embedding_bits[partition];
 				bit_pos_ %= sizeof(std::uint32_t) * 8;
 			}
 
