@@ -32,7 +32,7 @@ namespace
 		// Returns `true` on error.
 		bool parse(llvm::cl::Option& o, llvm::StringRef arg_name, llvm::StringRef arg, RangeOptValue<Integer>& value)
 		{
-			if (arg.getAsInteger(0, value.value))
+			if (arg.getAsInteger(0, value.value) || value.value < Min || Max < value.value)
 			{
 				return o.error("invalid argument '" + arg_name + "=" + arg + "'");
 			}
