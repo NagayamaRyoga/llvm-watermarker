@@ -139,7 +139,7 @@ namespace
 			// Table of {log2 x! | x < 13}
 			constexpr auto possible_embedding_bits = std::array<std::size_t, 13>
 			{
-				0, 0, 1, 2, 4, 6, 12, 15, 18, 21, 25, 28,
+				0, 0, 1, 2, 4, 6, 9, 12, 15, 18, 21, 25, 28,
 			};
 
 			const auto blocks = std::vector<std::reference_wrapper<llvm::BasicBlock>>(std::begin(func), std::end(func));
