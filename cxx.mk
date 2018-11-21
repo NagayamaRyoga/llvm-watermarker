@@ -34,4 +34,6 @@ ${BIN_DIR}/${TARGET}: ${OBJS}
 
 ${OBJ_DIR}/%.o: %.cpp
 	@mkdir -p ${@D}
-	${CXX} ${CXXFLAGS} -o $@ -c $^
+	${CXX} ${CXXFLAGS} -MMD -MP -o $@ -c $<
+
+-include ${DEPS}
