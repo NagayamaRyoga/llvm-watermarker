@@ -1,6 +1,14 @@
+include ../../common.mk
+
 WATERMARK := 77
 
 CC := clang
+
+CFLAGS := \
+	-DBUILD_DIR="\"$$PWD/8cc\""
+
+LDFLAGS := \
+	-no-pie
 
 SRCS := \
 	8cc/buffer.c \
@@ -20,76 +28,65 @@ SRCS := \
 	8cc/vector.c
 
 .PHONY: all test clean
+.PRECIOUS: ${OBJ_DIR}/stage1-wm/%-wm.ll
 
 all: stage3 stage3-wm
 
-stage3: stage2 8cc-stage3
-stage2: stage1 8cc-stage2
-stage1: 8cc-stage1
+stage3: ${BIN_DIR}/stage3/8cc.out
+stage2: ${BIN_DIR}/stage2/8cc.out
+stage1: ${BIN_DIR}/stage1/8cc.out
 
-stage3-wm: stage2-wm 8cc-stage3-wm
-stage2-wm: stage1-wm 8cc-stage2-wm
-stage1-wm: 8cc-stage1-wm
+stage3-wm: ${BIN_DIR}/stage3-wm/8cc.out
+stage2-wm: ${BIN_DIR}/stage2-wm/8cc.out
+stage1-wm: ${BIN_DIR}/stage1-wm/8cc.out
 
-# Normal 8cc
-8cc-stage1: ${SRCS:8cc/%.c=test/stage1/%.o}
-	${CC} -o $@ $^ -no-pie
+${BIN_DIR}/stage1/8cc.out: ${SRCS:8cc/%.c=${OBJ_DIR}/stage1/%.o}
+${BIN_DIR}/stage2/8cc.out: ${SRCS:8cc/%.c=${OBJ_DIR}/stage2/%.o}
+${BIN_DIR}/stage3/8cc.out: ${SRCS:8cc/%.c=${OBJ_DIR}/stage3/%.o}
 
-8cc-stage2: ${SRCS:8cc/%.c=test/stage2/%.o}
-	${CC} -o $@ $^ -no-pie
+${BIN_DIR}/stage1-wm/8cc.out: ${SRCS:8cc/%.c=${OBJ_DIR}/stage1-wm/%.o}
+${BIN_DIR}/stage2-wm/8cc.out: ${SRCS:8cc/%.c=${OBJ_DIR}/stage2-wm/%.o}
+${BIN_DIR}/stage3-wm/8cc.out: ${SRCS:8cc/%.c=${OBJ_DIR}/stage3-wm/%.o}
 
-8cc-stage3: ${SRCS:8cc/%.c=test/stage3/%.o}
-	${CC} -o $@ $^ -no-pie
-
-test/stage1/%.o: 8cc/%.c
+# Normal 8cc.
+${OBJ_DIR}/stage1/%.o: 8cc/%.c
 	@mkdir -p ${@D}
-	${CC} -DBUILD_DIR="\"$$PWD/8cc\"" -O2 -o $@ -c $<
+	${CC} ${CFLAGS} -O2 -o $@ -c $<
 
-test/stage2/%.o: 8cc/%.c 8cc-stage1
+${OBJ_DIR}/stage2/%.o: 8cc/%.c ${BIN_DIR}/stage1/8cc.out
 	@mkdir -p ${@D}
-	./8cc-stage1 -DBUILD_DIR="\"$$PWD/8cc\"" -w -o $@ -c $<
+	${BIN_DIR}/stage1/8cc.out -w ${CFLAGS} -o $@ -c $<
 
-test/stage3/%.o: 8cc/%.c 8cc-stage2
+${OBJ_DIR}/stage3/%.o: 8cc/%.c ${BIN_DIR}/stage2/8cc.out
 	@mkdir -p ${@D}
-	./8cc-stage2 -DBUILD_DIR="\"$$PWD/8cc\"" -w -o $@ -c $<
+	${BIN_DIR}/stage2/8cc.out -w ${CFLAGS} -o $@ -c $<
 
 # Watermarked 8cc
-8cc-stage1-wm: ${SRCS:8cc/%.c=test/stage1-wm/%.o}
-	${CC} -o $@ $^ -no-pie
-
-8cc-stage2-wm: ${SRCS:8cc/%.c=test/stage2-wm/%.o}
-	${CC} -o $@ $^ -no-pie
-
-8cc-stage3-wm: ${SRCS:8cc/%.c=test/stage3-wm/%.o}
-	${CC} -o $@ $^ -no-pie
-
-test/stage1-wm/%.o: test/stage1-wm/%-wm.ll
-	clang -o $@ -c $<
-
-test/stage1-wm/%-wm.ll: test/stage1-wm/%.ll
-	opt -load=../../nykk.so -O2 -block-wm -watermark=${WATERMARK} -S -o $@ $< 2> ${@:%.ll=%-stderr.txt}
-
-test/stage1-wm/%.ll: 8cc/%.c
+${OBJ_DIR}/stage1-wm/%.o: ${OBJ_DIR}/stage1-wm/%-wm.ll
 	@mkdir -p ${@D}
-	clang -DBUILD_DIR="\"$$PWD/8cc\"" -O2 -o $@ -emit-llvm -S $<
+	${CC} ${CFLAGS} -o $@ -c $<
 
-test/stage2-wm/%.o: 8cc/%.c 8cc-stage1-wm
+${OBJ_DIR}/stage1-wm/%-wm.ll: 8cc/%.c
 	@mkdir -p ${@D}
-	./8cc-stage1-wm -DBUILD_DIR="\"$$PWD/8cc\"" -w -o $@ -c $<
+	clang ${CFLAGS} -O2 -S -emit-llvm -o ${@:%-wm.ll=%.ll} $<
+	opt -load=${ROOT}/bin/src/nykk.so -block-wm -watermark=${WATERMARK} -S -o $@ ${@:%-wm.ll=%.ll} 2> ${@:%-wm.ll=%-log.txt}
 
-test/stage3-wm/%.o: 8cc/%.c 8cc-stage2-wm
+${OBJ_DIR}/stage2-wm/%.o: 8cc/%.c ${BIN_DIR}/stage1-wm/8cc.out
 	@mkdir -p ${@D}
-	./8cc-stage2-wm -DBUILD_DIR="\"$$PWD/8cc\"" -w -o $@ -c $<
+	${BIN_DIR}/stage1-wm/8cc.out -w ${CFLAGS} -o $@ -c $<
+
+${OBJ_DIR}/stage3-wm/%.o: 8cc/%.c ${BIN_DIR}/stage2-wm/8cc.out
+	@mkdir -p ${@D}
+	${BIN_DIR}/stage2-wm/8cc.out -w ${CFLAGS} -o $@ -c $<
+
+%.out:
+	@mkdir -p ${@D}
+	${CC} ${CFLAGS} -o $@ $^ ${LDFLAGS}
 
 test: stage3 stage3-wm
-	objdump -D 8cc-stage1 > stage1-asm.s
-	objdump -D 8cc-stage2 > stage2-asm.s
-	objdump -D 8cc-stage3 > stage3-asm.s
-	objdump -D 8cc-stage1-wm > stage1-wm-asm.s
-	objdump -D 8cc-stage2-wm > stage2-wm-asm.s
-	objdump -D 8cc-stage3-wm > stage3-wm-asm.s
-
-.PRECIOUS: test/stage1-wm/%.ll test/stage1-wm/%-wm.ll
-
-clean:
-	${RM} -r 8cc-* test *.s
+	objdump -D -M intel ${BIN_DIR}/stage1/8cc.out > ${BIN_DIR}/stage1/8cc.s
+	objdump -D -M intel ${BIN_DIR}/stage2/8cc.out > ${BIN_DIR}/stage2/8cc.s
+	objdump -D -M intel ${BIN_DIR}/stage3/8cc.out > ${BIN_DIR}/stage3/8cc.s
+	objdump -D -M intel ${BIN_DIR}/stage1-wm/8cc.out > ${BIN_DIR}/stage1-wm/8cc.s
+	objdump -D -M intel ${BIN_DIR}/stage2-wm/8cc.out > ${BIN_DIR}/stage2-wm/8cc.s
+	objdump -D -M intel ${BIN_DIR}/stage3-wm/8cc.out > ${BIN_DIR}/stage3-wm/8cc.s
