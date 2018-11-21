@@ -5,10 +5,5 @@
 README.md
 LICENSE
 
-*.a
-*.so
-*.o
-*.ll
-*.s
-
-test_*
+bin/
+obj/

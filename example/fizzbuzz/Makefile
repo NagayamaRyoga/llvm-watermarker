@@ -1,36 +1,38 @@
+include ../../common.mk
+
 SRCS := \
 	fizzbuzz.c
 
-LLS := ${SRCS:.c=.ll}
-LLS_0 := ${SRCS:%.c=%-0.ll}
-LLS_1 := ${SRCS:%.c=%-1.ll}
-LLS_2 := ${SRCS:%.c=%-2.ll}
-BINS := ${LLS:.ll=} ${LLS_0:.ll=} ${LLS_1:.ll=} ${LLS_2:.ll=}
-
-.PHONY: all test clean
+LLS := ${SRCS:%.c=${OBJ_DIR}/%.ll}
+LLS_0 := ${LLS:%.ll=%-0.ll}
+LLS_1 := ${LLS:%.ll=%-1.ll}
+LLS_2 := ${LLS:%.ll=%-2.ll}
+BINS := \
+	${LLS:${OBJ_DIR}/%.ll=${BIN_DIR}/%.out} \
+	${LLS_0:${OBJ_DIR}/%.ll=${BIN_DIR}/%.out} \
+	${LLS_1:${OBJ_DIR}/%.ll=${BIN_DIR}/%.out} \
+	${LLS_2:${OBJ_DIR}/%.ll=${BIN_DIR}/%.out}
 
 all: ${BINS}
 
 test: ${BINS}
-	./fizzbuzz > fizzbuzz.txt
-	./fizzbuzz-0 > fizzbuzz-0.txt
-	./fizzbuzz-1 > fizzbuzz-1.txt
-	./fizzbuzz-2 > fizzbuzz-2.txt
+	for i in ${BINS}; \
+	do $$i > $$i.txt; \
+	done
 
 ${BINS}: ${LLS} ${LLS_0} ${LLS_1} ${LLS_2}
 
-%.ll: %.c
+${OBJ_DIR}/%.ll: %.c
+	@mkdir -p ${@D}
 	clang -emit-llvm -S -O2 -o $@ $<
 
 %-0.ll: %.ll
-	opt -load=../../nykk.so -block-wm -watermark=0 -S -o $@ $<
+	opt -load=${ROOT}/bin/src/nykk.so -block-wm -watermark=0 -S -o $@ $<
 %-1.ll: %.ll
-	opt -load=../../nykk.so -block-wm -watermark=1 -S -o $@ $<
+	opt -load=${ROOT}/bin/src/nykk.so -block-wm -watermark=1 -S -o $@ $<
 %-2.ll: %.ll
-	opt -load=../../nykk.so -block-wm -watermark=2 -S -o $@ $<
+	opt -load=${ROOT}/bin/src/nykk.so -block-wm -watermark=2 -S -o $@ $<
 
-%: %.ll
+${BIN_DIR}/%.out: ${OBJ_DIR}/%.ll
+	@mkdir -p ${@D}
 	clang -o $@ $<
-
-clean:
-	${RM} ${BINS} *.ll *.txt

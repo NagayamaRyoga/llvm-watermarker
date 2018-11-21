@@ -1,27 +1,8 @@
-CXXFLAGS := \
-	-std=c++17 \
-	-Wall \
-	-Wextra \
-	-pedantic \
-	-Werror \
-	-fPIC
+TARGET := test_pass.out
+SRCS   := \
+	Test.cpp
 
-LDFLAGS :=
+include ../cxx.mk
 
-.PHONY: all run clean
-
-all: test_pass
-
-run: test_pass
-	./test_pass
-
-test_pass: Test.o
-	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
-
-Test.o: \
-	Test.cpp \
-	TestPermutationTable.hpp \
-	../src/nykk/PermutationTable.hpp
-
-clean:
-	${RM} test_pass *.o
+test: ${BIN_DIR}/${TARGET}
+	$<
