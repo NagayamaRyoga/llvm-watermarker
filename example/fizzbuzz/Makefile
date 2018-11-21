@@ -23,11 +23,11 @@ ${BINS}: ${LLS} ${LLS_0} ${LLS_1} ${LLS_2}
 	clang -emit-llvm -S -O2 -o $@ $<
 
 %-0.ll: %.ll
-	opt -load ../../nykk.so -block-wm -watermark=0 -S -o $@ $<
+	opt -load=../../nykk.so -block-wm -watermark=0 -S -o $@ $<
 %-1.ll: %.ll
-	opt -load ../../nykk.so -block-wm -watermark=1 -S -o $@ $<
+	opt -load=../../nykk.so -block-wm -watermark=1 -S -o $@ $<
 %-2.ll: %.ll
-	opt -load ../../nykk.so -block-wm -watermark=2 -S -o $@ $<
+	opt -load=../../nykk.so -block-wm -watermark=2 -S -o $@ $<
 
 %: %.ll
 	clang -o $@ $<

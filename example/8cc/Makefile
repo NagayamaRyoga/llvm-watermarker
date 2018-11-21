@@ -67,7 +67,7 @@ test/stage1-wm/%.o: test/stage1-wm/%-wm.ll
 	clang -o $@ -c $<
 
 test/stage1-wm/%-wm.ll: test/stage1-wm/%.ll
-	opt -load ../../nykk.so -O2 -block-wm -watermark=${WATERMARK} -S -o $@ $< 2> ${@:%.ll=%-stderr.txt}
+	opt -load=../../nykk.so -O2 -block-wm -watermark=${WATERMARK} -S -o $@ $< 2> ${@:%.ll=%-stderr.txt}
 
 test/stage1-wm/%.ll: 8cc/%.c
 	@mkdir -p ${@D}
