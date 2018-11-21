@@ -9,11 +9,11 @@ CXXFLAGS := \
 	-pedantic \
 	-Werror \
 	${LLVM_INCLUDE_DIRS:%=-I%} \
-	-fPIC
+	-fPIC \
+	-fno-rtti
 
 LDFLAGS := \
-	$(shell llvm-config --ldflags) \
-	$(shell llvm-config --libs)
+	$(shell llvm-config --ldflags)
 
 .PHONY: all test example clean
 
