@@ -1,3 +1,10 @@
+.editorconfig
+.git
+.gitignore
+.gitmodules
+README.md
+LICENSE
+
 *.a
 *.so
 *.o
