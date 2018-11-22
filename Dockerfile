@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 COPY . /nykk
 WORKDIR /nykk
 
-RUN apt update && apt install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
 		xz-utils \
 		build-essential \
 		curl \
