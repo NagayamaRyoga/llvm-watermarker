@@ -64,7 +64,7 @@ ${OBJ_DIR}/stage3/%.o: 8cc/%.c ${BIN_DIR}/stage2/8cc.out
 # Watermarked 8cc
 ${OBJ_DIR}/stage1-wm/%.o: ${OBJ_DIR}/stage1-wm/%-wm.ll
 	@mkdir -p ${@D}
-	${CC} ${CFLAGS} -o $@ -c $<
+	clang ${CFLAGS} -o $@ -c $<
 
 ${OBJ_DIR}/stage1-wm/%-wm.ll: 8cc/%.c
 	@mkdir -p ${@D}
