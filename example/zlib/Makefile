@@ -6,7 +6,8 @@ CC := clang
 
 CFLAGS := \
 	-D_LARGEFILE64_SOURCE=1 \
-	-DHAVE_HIDDEN
+	-DHAVE_HIDDEN \
+	-O2
 
 SRCS := \
 	zlib/adler32.c \
