@@ -99,6 +99,8 @@ namespace
 			perm_table_ = nykk::create_permutation_table(partition_opt.getValue().value);
 			bit_pos_ = 0;
 
+			llvm::errs() << "func" << ", " << "blocks" << ", " << "bits" << "\n";
+
 			return false;
 		}
 
@@ -125,15 +127,13 @@ namespace
 		 */
 		bool runOnFunction(llvm::Function& func) override
 		{
-			llvm::errs()
-				<< "[BlockWatermarker - '" << func.getName() << "' in " << module_name_ << "] Basic blocks: " << func.size() << "\n";
+			llvm::errs() << func.getName() << ", " << func.size() << ", ";
 
 			const auto partition = partition_opt.getValue().value;
 
 			if (func.size() <= partition)
 			{
-				llvm::errs()
-					<< "    function '" << func.getName() << "' is too small to watermark" << "\n";
+				llvm::errs() << 0 << "\n";
 
 				return false;
 			}
@@ -179,8 +179,7 @@ namespace
 				last_block = &blocks[block_index].get();
 			}
 
-			llvm::errs()
-				<< "    " << num_embedded_bits << "bit watermark embedded in function '" << func.getName() << "'" << "\n";
+			llvm::errs() << num_embedded_bits << "\n";
 
 			return true;
 		}

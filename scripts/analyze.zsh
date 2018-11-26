@@ -1,10 +1,9 @@
 #!/bin/zsh
 g() {
-	NAME=$1
-	SIZE=$(stat -c %s $NAME)
-	LINES=$(wc -l $NAME | awk '{print $1+1}')
+	SIZE=$(stat -c %s $1)
+	LINES=$(wc -l $1 | awk '{print $1+1}')
 
-	echo "name, $1, size, $SIZE, lines, $LINES"
+	echo "$1, $SIZE, $LINES"
 }
 
 f() {
@@ -13,5 +12,6 @@ f() {
 	done
 }
 
+echo "name, size, lines"
 f example/8cc/8cc/*.c
 f example/zlib/zlib/*.c
