@@ -10,7 +10,7 @@ OS: Ubuntu 18.04 (WSL)
 
 Compilers: GCC 7.3.0, Clang 6.0.0
 
-Libraries: LLVM
+Libraries: LLVM 7.0
 
 ## 命名規約
 
