@@ -16,14 +16,10 @@ f() {
 
 h() {
 	R=$(f $@)
-	FILES=$(echo $R | wc -l)
-	FUNCS=$(echo $R | awk '{a+=$2} END {print a}')
-	BLOCKS=$(echo $R | awk '{a+=$3} END {print a}')
-	BITS=$(echo $R | awk '{a+=$4} END {print a}')
 
 	echo "file, funcs, blocks, bits"
-	echo $R
-	echo "files: $FILES, funcs: $FUNCS, blocks: $BLOCKS, bits: $BITS"
+	echo "$R"
+	echo "$R" | awk '{f++; a+=$2; b+=$3; c+=$4} END {print "files: " f ", funcs: " a ", blocks: " b ", bits: " c}'
 }
 
 h obj/example/8cc/stage1-wm/*-log.txt

@@ -15,13 +15,10 @@ f() {
 
 h() {
 	R=$(f $@)
-	FILES=$(echo $R | wc -l)
-	SIZE=$(echo $R | awk '{a+=$2} END {print a}')
-	LINES=$(echo $R | awk '{a+=$3} END {print a}')
 
 	echo "name, size, lines"
 	echo "$R"
-	echo "files: $FILES, size: $SIZE, lines: $LINES"
+	echo "$R" | awk '{f++; s+=$2; l+=$3} END {print "files: " f ", size: " s ", lines: " l}'
 }
 
 h `ls example/8cc/8cc/*.c | awk -F 'example/8cc/8cc/utiltest.c' '{print $NF}'`
