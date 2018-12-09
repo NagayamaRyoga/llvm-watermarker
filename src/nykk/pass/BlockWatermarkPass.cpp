@@ -4,6 +4,7 @@
 #include <llvm/Support/raw_ostream.h>
 
 #include "../PermutationTable.hpp"
+#include "Opts.hpp"
 
 namespace
 {
@@ -47,14 +48,6 @@ namespace
 		llvm::cl::desc("Block partition number (2 ~ 10 default 7)"),
 		llvm::cl::value_desc("size"),
 		llvm::cl::init(RangeOptValue<std::size_t> {7}),
-	};
-
-	const llvm::cl::opt<int> watermark_opt
-	{
-		"watermark",
-		llvm::cl::desc("Watermark (32bit)"),
-		llvm::cl::value_desc("watermark"),
-		llvm::cl::Required,
 	};
 
 	/**
@@ -156,7 +149,7 @@ namespace
 			for (; block_index + partition <= blocks.size(); block_index += partition)
 			{
 				// Part of watermark to embed.
-				const auto data = (watermark_opt >> bit_pos_) & bit_mask;
+				const auto data = (nykk::pass::watermark_opt >> bit_pos_) & bit_mask;
 
 				// Shuffles each `partition` blocks.
 				for (std::size_t i = 0; i < partition; i++)
