@@ -1,3 +1,5 @@
+include common.mk
+
 .PHONY: all test clean
 
 all:
@@ -9,6 +11,3 @@ test:
 	${MAKE} -C src     test
 	${MAKE} -C test    test
 	${MAKE} -C example test
-
-clean:
-	${RM} -r bin obj

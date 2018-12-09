@@ -1,3 +1,5 @@
+include ../common.mk
+
 .PHONY: all test clean
 
 all:
