@@ -4,6 +4,7 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <string_view>
 #include <vector>
 
@@ -12,9 +13,9 @@ namespace nykk
 	class CircularBitStream
 	{
 	public:
-		static CircularBitStream from_string(std::string_view s)
+		static std::unique_ptr<CircularBitStream> from_string(std::string_view s)
 		{
-			return CircularBitStream { reinterpret_cast<const std::byte*>(s.data()), s.size() };
+			return std::make_unique<CircularBitStream>(reinterpret_cast<const std::byte*>(s.data()), s.size());
 		}
 
 		explicit CircularBitStream(const std::byte* pointer, std::size_t length)
@@ -24,12 +25,12 @@ namespace nykk
 			assert(pointer != nullptr || length == 0);
 		}
 
-		// Uncopyable, movable.
+		// Uncopyable, unmovable.
 		CircularBitStream(const CircularBitStream&) =delete;
-		CircularBitStream(CircularBitStream&&) =default;
+		CircularBitStream(CircularBitStream&&) =delete;
 
 		CircularBitStream& operator=(const CircularBitStream&) =delete;
-		CircularBitStream& operator=(CircularBitStream&&) =default;
+		CircularBitStream& operator=(CircularBitStream&&) =delete;
 
 		~CircularBitStream() =default;
 

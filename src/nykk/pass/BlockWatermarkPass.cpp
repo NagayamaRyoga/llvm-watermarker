@@ -3,6 +3,7 @@
 #include <llvm/Pass.h>
 #include <llvm/Support/raw_ostream.h>
 
+#include "../CircularBitStream.hpp"
 #include "../PermutationTable.hpp"
 #include "Opts.hpp"
 
@@ -65,8 +66,8 @@ namespace
 		explicit BlockWatermarkPass()
 			: FunctionPass(ID)
 			, module_name_()
+			, bit_stream_()
 			, perm_table_()
-			, bit_pos_(0)
 		{
 		}
 
@@ -89,8 +90,8 @@ namespace
 		bool doInitialization(llvm::Module& module) override
 		{
 			module_name_ = module.getName();
+			bit_stream_ = nykk::CircularBitStream::from_string(nykk::pass::watermark_opt);
 			perm_table_ = nykk::create_permutation_table(partition_opt.getValue().value);
-			bit_pos_ = 0;
 
 			llvm::errs() << "func" << ", " << "blocks" << ", " << "bits" << "\n";
 
@@ -144,12 +145,10 @@ namespace
 			std::size_t num_embedded_bits = 0;
 			std::size_t block_index = 1; // Without entry block.
 
-			const auto bit_mask = (1 << possible_embedding_bits[partition]) - 1;
-
 			for (; block_index + partition <= blocks.size(); block_index += partition)
 			{
 				// Part of watermark to embed.
-				const auto data = (nykk::pass::watermark_opt >> bit_pos_) & bit_mask;
+				const auto data = bit_stream_->read(possible_embedding_bits[partition]);
 
 				// Shuffles each `partition` blocks.
 				for (std::size_t i = 0; i < partition; i++)
@@ -161,8 +160,6 @@ namespace
 				}
 
 				num_embedded_bits += possible_embedding_bits[partition];
-				bit_pos_ += possible_embedding_bits[partition];
-				bit_pos_ %= sizeof(std::uint32_t) * 8;
 			}
 
 			// Inserts rest blocks.
@@ -179,8 +176,8 @@ namespace
 
 	private:
 		std::string module_name_;
+		std::unique_ptr<nykk::CircularBitStream> bit_stream_;
 		std::vector<std::vector<std::uint8_t>> perm_table_;
-		std::uint32_t bit_pos_;
 	};
 
 	char BlockWatermarkPass::ID;
