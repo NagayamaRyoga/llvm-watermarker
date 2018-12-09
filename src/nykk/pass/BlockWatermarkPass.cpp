@@ -108,6 +108,7 @@ namespace
 		bool doFinalization([[maybe_unused]] llvm::Module& module) override
 		{
 			module_name_.clear();
+			bit_stream_.reset();
 
 			return false;
 		}
