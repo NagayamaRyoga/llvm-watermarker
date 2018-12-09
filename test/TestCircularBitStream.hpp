@@ -22,6 +22,9 @@ inline void run_test_circular_bit_stream()
 
 	assert(s.read(16) == 0xb98e);
 	assert(s.pos_bit() == 4);
+
+	assert(s.read(64) == 0xb98efcdab98efcda);
+	assert(s.pos_bit() == 4);
 }
 
 #endif

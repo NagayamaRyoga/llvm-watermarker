@@ -65,7 +65,7 @@ namespace nykk
 
 			for (std::size_t i = 0; i < size_bits; i++)
 			{
-				data |= read_bit() ? 1 << i : 0;
+				data |= read_bit() ? std::uint64_t {1} << i : 0;
 			}
 
 			return data;
