@@ -3,8 +3,6 @@
 
 #include "../src/nykk/CircularBitStream.hpp"
 
-#include <iostream>
-
 inline void run_test_circular_bit_stream()
 {
 	auto s = nykk::CircularBitStream::from_string(u8"\xab\xcd\xef\x98");
