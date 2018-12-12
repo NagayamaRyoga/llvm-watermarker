@@ -1,4 +1,5 @@
 #include <llvm/IR/Function.h>
+#include <llvm/IR/InstrTypes.h>
 #include <llvm/IR/Module.h>
 #include <llvm/Pass.h>
 #include <llvm/Support/raw_ostream.h>
@@ -9,7 +10,7 @@
 namespace
 {
 	/**
-	 * @brief      Watermarking pass by instruction swapping methods.
+	 * @brief      Watermarking pass by instruction transform methods.
 	 */
 	class InstructionWatermarkPass
 		: public llvm::BasicBlockPass
@@ -77,8 +78,36 @@ namespace
 		 */
 		bool runOnBasicBlock(llvm::BasicBlock& block) override
 		{
-			llvm::errs() << block.getParent()->getName() << "," << block.size() << "," << 0 << "\n";
-			return false;
+			std::size_t num_embedded_bits = 0;
+			bool is_changed = false;
+
+			llvm::errs() << "V-------------------------------V" << "\n";
+
+			for (auto& inst : block)
+			{
+				llvm::errs() << inst.getOpcode();
+
+				if (auto bin_op = llvm::dyn_cast<llvm::BinaryOperator>(&inst))
+				{
+					bool is_swapped = !bin_op->swapOperands();
+					is_changed = is_swapped || is_changed;
+					llvm::errs() << ", " << "binop";
+				}
+				else if (auto cmp_inst = llvm::dyn_cast<llvm::CmpInst>(&inst))
+				{
+					cmp_inst->swapOperands();
+					bool is_swapped = !cmp_inst->isCommutative();
+					is_changed = is_swapped || is_changed;
+					llvm::errs() << ", " << "cmpinst";
+				}
+
+
+				llvm::errs() << "\n";
+			}
+
+			llvm::errs() << block.getParent()->getName() << "," << block.size() << "," << num_embedded_bits << "\n";
+
+			return is_changed;
 		}
 
 	private:
@@ -90,6 +119,6 @@ namespace
 	const llvm::RegisterPass<InstructionWatermarkPass> pass_registry =
 	{
 		"inst-wm",
-		"Watermarking pass by instruction swapping methods",
+		"Watermarking pass by instruction transform methods",
 	};
 }

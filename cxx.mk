@@ -8,6 +8,7 @@ CXXFLAGS := \
 	-Wextra \
 	-pedantic \
 	-Werror \
+	-Wno-unused-parameter \
 	$(addprefix -I, $(shell llvm-config --includedir)) \
 	-fPIC \
 	-fno-rtti
