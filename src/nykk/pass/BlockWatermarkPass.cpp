@@ -58,7 +58,7 @@ namespace
 		: public llvm::FunctionPass
 	{
 	public:
-		static char ID; // Needed for LLVM.
+		static inline char ID; // Needed for LLVM.
 
 		/**
 		 * @brief      Constructor.
@@ -180,8 +180,6 @@ namespace
 		std::unique_ptr<nykk::CircularBitStream> bit_stream_;
 		std::vector<std::vector<std::uint8_t>> perm_table_;
 	};
-
-	char BlockWatermarkPass::ID;
 
 	// Registers pass.
 	const llvm::RegisterPass<BlockWatermarkPass> pass_registry =

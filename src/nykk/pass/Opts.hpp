@@ -5,7 +5,7 @@
 
 namespace nykk::pass
 {
-	const llvm::cl::opt<std::string> watermark_opt
+	inline const llvm::cl::opt<std::string> watermark_opt
 	{
 		"watermark",
 		llvm::cl::desc("Watermark (32bit)"),
