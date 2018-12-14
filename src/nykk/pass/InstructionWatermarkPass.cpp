@@ -81,18 +81,25 @@ namespace
 			std::size_t num_embedded_bits = 0;
 			bool is_changed = false;
 
-
 			for (auto& inst : block)
 			{
 				if (auto bin_op = llvm::dyn_cast<llvm::BinaryOperator>(&inst))
 				{
-					is_changed = !bin_op->swapOperands() || is_changed;
+					if (bit_stream_->read_bit())
+					{
+						is_changed = !bin_op->swapOperands() || is_changed;
+					}
+
 					num_embedded_bits += 1;
 				}
 				else if (auto cmp_inst = llvm::dyn_cast<llvm::CmpInst>(&inst))
 				{
-					cmp_inst->swapOperands();
-					is_changed = true;
+					if (bit_stream_->read_bit())
+					{
+						cmp_inst->swapOperands();
+						is_changed = true;
+					}
+
 					num_embedded_bits += 1;
 				}
 			}
