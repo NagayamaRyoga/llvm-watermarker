@@ -83,16 +83,17 @@ namespace
 
 			for (auto& inst : block)
 			{
-				if (auto bin_op = llvm::dyn_cast<llvm::BinaryOperator>(&inst))
+				if (auto bin_op = llvm::dyn_cast<llvm::BinaryOperator>(&inst); bin_op && bin_op->isCommutative())
 				{
 					if (bit_stream_->read_bit())
 					{
-						is_changed = !bin_op->swapOperands() || is_changed;
+						bin_op->swapOperands();
+						is_changed = true;
 					}
 
 					num_embedded_bits += 1;
 				}
-				else if (auto cmp_inst = llvm::dyn_cast<llvm::CmpInst>(&inst))
+				else if (auto cmp_inst = llvm::dyn_cast<llvm::CmpInst>(&inst); cmp_inst)
 				{
 					if (bit_stream_->read_bit())
 					{
