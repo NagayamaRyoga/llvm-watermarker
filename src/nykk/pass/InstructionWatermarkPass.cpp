@@ -104,7 +104,7 @@ namespace
 				}
 			}
 
-			llvm::errs() << block.getParent()->getName() << "," << block.size() << "," << num_embedded_bits << "\n";
+			llvm::errs() << block.getParent()->getName() << ", " << block.size() << ", " << num_embedded_bits << "\n";
 
 			return is_changed;
 		}
