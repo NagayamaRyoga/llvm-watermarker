@@ -45,7 +45,7 @@ h2() {
 }
 
 h1 obj/example/8cc/stage1-wm/*-block-wm.txt
-h1 obj/example/zlib/zlib-wm/*-block-wm.txt
+h1 obj/example/zlib/zlib-block-wm/*-block-wm.txt
 
 h2 obj/example/8cc/stage1-wm/*-inst-wm.txt
-h2 obj/example/zlib/zlib-wm/*-inst-wm.txt
+h2 obj/example/zlib/zlib-inst-wm/*-inst-wm.txt
