@@ -81,28 +81,20 @@ namespace
 			std::size_t num_embedded_bits = 0;
 			bool is_changed = false;
 
-			llvm::errs() << "V-------------------------------V" << "\n";
 
 			for (auto& inst : block)
 			{
-				llvm::errs() << inst.getOpcode();
-
 				if (auto bin_op = llvm::dyn_cast<llvm::BinaryOperator>(&inst))
 				{
-					bool is_swapped = !bin_op->swapOperands();
-					is_changed = is_swapped || is_changed;
-					llvm::errs() << ", " << "binop";
+					is_changed = !bin_op->swapOperands() || is_changed;
+					num_embedded_bits += 1;
 				}
 				else if (auto cmp_inst = llvm::dyn_cast<llvm::CmpInst>(&inst))
 				{
 					cmp_inst->swapOperands();
-					bool is_swapped = !cmp_inst->isCommutative();
-					is_changed = is_swapped || is_changed;
-					llvm::errs() << ", " << "cmpinst";
+					is_changed = true;
+					num_embedded_bits += 1;
 				}
-
-
-				llvm::errs() << "\n";
 			}
 
 			llvm::errs() << block.getParent()->getName() << "," << block.size() << "," << num_embedded_bits << "\n";
