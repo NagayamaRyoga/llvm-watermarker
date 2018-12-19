@@ -89,18 +89,23 @@ ${OBJ_DIR}/zlib-wm/%.o: zlib/%.c
 	clang ${CFLAGS} -o $@ -c ${@:%.o=%-inst-wm.ll}
 
 ${OBJ_DIR}/test.o: test.cpp
+	@mkdir -p ${@D}
 	${CXX} ${CXXFLAGS} -o $@ -c $<
 
 ${BIN_DIR}/test:
+	@mkdir -p ${@D}
 	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
 
 ${BIN_DIR}/test-block-wm:
+	@mkdir -p ${@D}
 	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
 
 ${BIN_DIR}/test-inst-wm:
+	@mkdir -p ${@D}
 	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
 
 ${BIN_DIR}/test-wm:
+	@mkdir -p ${@D}
 	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
 
 %.a:
