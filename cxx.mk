@@ -14,7 +14,7 @@ CXXFLAGS := \
 	-fno-rtti
 
 LDFLAGS := \
-	$(shell llvm-config --ldflags)
+	$(shell llvm-config --ldflags --libs --system-libs)
 
 OBJS := ${SRCS:%.cpp=${OBJ_DIR}/%.o}
 DEPS := ${OBJS:.o=.d}
