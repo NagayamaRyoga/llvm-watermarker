@@ -40,13 +40,13 @@ namespace
 		/**
 		 * @brief      Initialization before pass is run.
 		 *
-		 * @param      module  Reference of the module.
+		 * @param      function  Reference of the function.
 		 *
 		 * @return     ?
 		 */
-		bool doInitialization(llvm::Module& module) override
+		bool doInitialization(llvm::Function& function) override
 		{
-			module_name_ = module.getName();
+			module_name_ = function.getParent()->getName();
 			bit_stream_ = nykk::CircularBitStream::from_string(nykk::pass::watermark_opt);
 
 			llvm::errs() << "func" << ", " << "insts" << ", " << "bits" << "\n";
@@ -57,11 +57,11 @@ namespace
 		/**
 		 * @brief      Finalization after pass is run.
 		 *
-		 * @param      module  Reference of the module.
+		 * @param      function  Reference of the function.
 		 *
 		 * @return     ?
 		 */
-		bool doFinalization([[maybe_unused]] llvm::Module& module) override
+		bool doFinalization([[maybe_unused]] llvm::Function& function) override
 		{
 			module_name_.clear();
 			bit_stream_.reset();
