@@ -29,7 +29,14 @@ Libraries: LLVM 7.0
 | 列挙子 | UpperCamelCase | 好み | かっこいい気がする |
 | マクロ | SNAKE\_CASE | 慣例 | 必要ある時のみ |
 
-## ビルド方法
+## プロジェクトのダウンロード
+
+```sh
+$ git clone git@github.com:NagayamaRyoga/llvm-watermarker.git
+$ cd llvm-watermarker
+```
+
+## ビルド
 
 ```sh
 $ make
@@ -39,7 +46,7 @@ $ make
 
 ```sh
 # コードレイアウトによる埋め込み
-$ opt -load=bin/src/nykk.so -block-wm -watermark="<watermark>" -o <output> <input>
+$ opt -load=bin/src/nykk.so -block-wm -watermark="<watermark>" -o <output-llvm-bitcode> <input-llvm-bitcode>
 # 命令の変更による埋め込み
-$ opt -load=bin/src/nykk.so -inst-wm -watermark="<watermark>" -o <output> <input>
+$ opt -load=bin/src/nykk.so -inst-wm -watermark="<watermark>" -o <output-llvm-bitcode> <input-llvm-bitcode>
 ```
