@@ -6,9 +6,9 @@ LLVMを用いた電子透かし埋め込み器
 
 Language: C++17
 
-OS: Ubuntu 18.04 (WSL)
+OS: Ubuntu 18.04
 
-Compilers: GCC 7.3.0, Clang 6.0.0
+Compilers: GCC 7.3.0, Clang 7.0.0
 
 Libraries: LLVM 7.0
 
@@ -31,8 +31,15 @@ Libraries: LLVM 7.0
 
 ## ビルド方法
 
-TODO
+```sh
+$ make
+```
 
 ## 実行方法
 
-TODO
+```sh
+# コードレイアウトによる埋め込み
+$ opt -load=bin/src/nykk.so -block-wm -watermark="<watermark>" -o <output> <input>
+# 命令の変更による埋め込み
+$ opt -load=bin/src/nykk.so -inst-wm -watermark="<watermark>" -o <output> <input>
+```
