@@ -48,8 +48,12 @@ echo "==== 8cc block-wm ===="
 h1 obj/example/8cc/stage1-wm/*-block-wm.txt
 echo "==== zlib block-wm ===="
 h1 obj/example/zlib/zlib-block-wm/*-block-wm.txt
+echo "==== fizzbuzz-rs block-wm ===="
+h1 obj/example/fizzbuzz-rs/*-block-wm.txt
 
 echo "==== 8cc inst-wm ===="
 h2 obj/example/8cc/stage1-wm/*-inst-wm.txt
 echo "==== zlib inst-wm ===="
 h2 obj/example/zlib/zlib-inst-wm/*-inst-wm.txt
+echo "==== fizzbuzz-rs inst-wm ===="
+h2 obj/example/fizzbuzz-rs/*-inst-wm.txt
