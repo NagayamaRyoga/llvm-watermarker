@@ -18,3 +18,6 @@ benchmark: test
 	bin/example/zlib/test-inst-wm | tee bin/example/zlib/test-inst-wm.txt
 	bin/example/zlib/test-wm | tee bin/example/zlib/test-wm.txt
 	paste -d"," bin/example/zlib/test.txt bin/example/zlib/test-block-wm.txt bin/example/zlib/test-inst-wm.txt bin/example/zlib/test-wm.txt > bin/example/zlib/test.csv
+
+clean::
+	${MAKE} -C example clean

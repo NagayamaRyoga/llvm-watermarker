@@ -8,5 +8,5 @@ OBJ_DIR := ${ROOT}/obj/${CD:${ROOT}/%=%}
 
 .PHONY: all test clean
 
-clean:
+clean::
 	${RM} -r bin obj

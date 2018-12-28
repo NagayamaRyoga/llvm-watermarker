@@ -13,3 +13,6 @@ test:
 	${MAKE} -C zlib        test
 	${MAKE} -C fizzbuzz-rs test
 	${MAKE} -C numguess-rs test
+
+clean::
+	${MAKE} -C numguess-rs clean

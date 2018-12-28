@@ -10,7 +10,7 @@ all: ${BIN_DIR}/numguess.out
 
 test: ${BIN_DIR}/numguess.out
 
-clean:
+clean::
 	cargo clean
 
 ${BIN_DIR}/numguess.out:

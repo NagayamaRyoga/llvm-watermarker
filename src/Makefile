@@ -1,8 +1,6 @@
 TARGET := nykk.so
 SRCS   := \
-	nykk/pass/BlockCounterPass.cpp \
 	nykk/pass/BlockWatermarkPass.cpp \
-	nykk/pass/InstructionWatermarkPass.cpp \
-	nykk/pass/TestPass.cpp
+	nykk/pass/InstructionWatermarkPass.cpp
 
 include ../cxx.mk
