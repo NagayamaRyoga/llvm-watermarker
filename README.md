@@ -8,7 +8,7 @@ Language: C++17
 
 OS: Ubuntu 18.04
 
-Compilers: GCC 7.3.0, Clang 7.0.0
+Compilers: GCC 7.3.0, Clang 7.0.0, rustc 1.31.1
 
 Libraries: LLVM 7.0
 
