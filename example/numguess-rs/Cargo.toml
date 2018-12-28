@@ -1,0 +1,8 @@
+[package]
+name = "numguess-rs"
+version = "1.0.0"
+authors = ["NagayamaRyoga <nagayama15@sec.is.kit.ac.jp>"]
+edition = "2018"
+
+[dependencies]
+rand="0.3.0"
