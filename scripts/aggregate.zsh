@@ -1,9 +1,9 @@
 #!/bin/zsh
 g1() {
 	FILE=$(basename ${1/-block-wm.txt/.c})
-	FUNCS=$(tail -n +2 $1 | wc -l)
-	BLOCKS=$(tail -n +2 $1 | awk '{a+=$2} END {print a}')
-	BITS=$(tail -n +2 $1 | awk '{a+=$3} END {print a}')
+	FUNCS=$(cat $1 | wc -l)
+	BLOCKS=$(awk '{a+=$2} END {print a}' $1)
+	BITS=$(awk '{a+=$3} END {print a}' $1)
 
 	echo "$FILE, $FUNCS, $BLOCKS, $BITS"
 }
@@ -24,8 +24,8 @@ h1() {
 
 g2() {
 	FILE=$(basename ${1/-inst-wm.txt/.c})
-	INSTS=$(tail -n +2 $1 | awk '{a+=$2} END {print a}')
-	BITS=$(tail -n +2 $1 | awk '{a+=$3} END {print a}')
+	INSTS=$(awk '{a+=$2} END {print a}' $1)
+	BITS=$(awk '{a+=$3} END {print a}' $1)
 
 	echo "$FILE, $INSTS, $BITS"
 }
@@ -44,8 +44,12 @@ h2() {
 	echo "$R" | awk '{f++; a+=$2; b+=$3} END {print "files: " f ", insts: " a ", bits: " b}'
 }
 
+echo "==== 8cc block-wm ===="
 h1 obj/example/8cc/stage1-wm/*-block-wm.txt
+echo "==== zlib block-wm ===="
 h1 obj/example/zlib/zlib-block-wm/*-block-wm.txt
 
+echo "==== 8cc inst-wm ===="
 h2 obj/example/8cc/stage1-wm/*-inst-wm.txt
+echo "==== zlib inst-wm ===="
 h2 obj/example/zlib/zlib-inst-wm/*-inst-wm.txt

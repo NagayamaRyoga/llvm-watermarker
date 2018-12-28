@@ -49,8 +49,6 @@ namespace
 			module_name_ = function.getParent()->getName();
 			bit_stream_ = nykk::CircularBitStream::from_string(nykk::pass::watermark_opt);
 
-			llvm::errs() << "func" << ", " << "insts" << ", " << "bits" << "\n";
-
 			return false;
 		}
 

@@ -93,8 +93,6 @@ namespace
 			bit_stream_ = nykk::CircularBitStream::from_string(nykk::pass::watermark_opt);
 			perm_table_ = nykk::create_permutation_table(partition_opt.getValue().value);
 
-			llvm::errs() << "func" << ", " << "blocks" << ", " << "bits" << "\n";
-
 			return false;
 		}
 
