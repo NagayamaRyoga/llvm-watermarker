@@ -1,7 +1,7 @@
-#include <array>
-#include <chrono>
+#include <ctime>
 #include <cstddef>
-#include <iostream>
+#include <cstdio>
+#include <array>
 #include <random>
 #include <vector>
 
@@ -36,11 +36,11 @@ namespace
 	}
 
 	template <typename F>
-	std::chrono::high_resolution_clock::duration measure(F&& f)
+	std::clock_t measure(F&& f)
 	{
-		const auto start = std::chrono::high_resolution_clock::now();
+		const auto start = std::clock();
 		f();
-		const auto end = std::chrono::high_resolution_clock::now();
+		const auto end = std::clock();
 
 		return end - start;
 	}
@@ -85,7 +85,7 @@ int main()
 		return std::vector<std::byte>(std::begin(data), std::end(data));
 	}();
 
-	std::cout << "compression[us],decompression[us]" << std::endl;
+	std::puts("compression[us], decompression[us]");
 
 	constexpr std::size_t n = 100;
 
@@ -101,8 +101,11 @@ int main()
 			decompression_test(compressed_test_data, output_buffer);
 		});
 
-		std::cout
-			<< std::chrono::duration_cast<std::chrono::microseconds>(compression_time).count() << ","
-			<< std::chrono::duration_cast<std::chrono::microseconds>(decompression_time).count() << std::endl;
+		std::printf(
+			"%f, %f\n",
+			1e6 * compression_time / CLOCKS_PER_SEC,
+			1e6 * decompression_time / CLOCKS_PER_SEC);
+
+		std::fflush(stdout);
 	}
 }
