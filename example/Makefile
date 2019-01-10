@@ -14,5 +14,8 @@ test:
 	${MAKE} -C fizzbuzz-rs test
 	${MAKE} -C numguess-rs test
 
+benchmark:
+	${MAKE} -C zlib        benchmark
+
 clean::
 	${MAKE} -C numguess-rs clean

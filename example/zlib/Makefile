@@ -44,26 +44,33 @@ OBJS_WM := ${SRCS:zlib/%.c=${OBJ_DIR}/zlib-wm/%.o}
 .PHONY: all test
 
 all: \
-	${BIN_DIR}/test \
-	${BIN_DIR}/test-block-wm \
-	${BIN_DIR}/test-inst-wm \
-	${BIN_DIR}/test-wm
+	${BIN_DIR}/benchmark \
+	${BIN_DIR}/benchmark-block-wm \
+	${BIN_DIR}/benchmark-inst-wm \
+	${BIN_DIR}/benchmark-wm
 
 test: \
-	${BIN_DIR}/test \
-	${BIN_DIR}/test-block-wm \
-	${BIN_DIR}/test-inst-wm \
-	${BIN_DIR}/test-wm
+	${BIN_DIR}/benchmark \
+	${BIN_DIR}/benchmark-block-wm \
+	${BIN_DIR}/benchmark-inst-wm \
+	${BIN_DIR}/benchmark-wm
+
+benchmark:
+	${BIN_DIR}/benchmark | tee ${BIN_DIR}/benchmark.txt
+	${BIN_DIR}/benchmark-block-wm | tee ${BIN_DIR}/benchmark-block-wm.txt
+	${BIN_DIR}/benchmark-inst-wm | tee ${BIN_DIR}/benchmark-inst-wm.txt
+	${BIN_DIR}/benchmark-wm | tee ${BIN_DIR}/benchmark-wm.txt
+	paste -d"," ${BIN_DIR}/benchmark.txt ${BIN_DIR}/benchmark-block-wm.txt ${BIN_DIR}/benchmark-inst-wm.txt ${BIN_DIR}/benchmark-wm.txt > ${BIN_DIR}/benchmark.csv
 
 ${BIN_DIR}/libz.a: ${OBJS}
 ${BIN_DIR}/libz-block-wm.a: ${OBJS_BWM}
 ${BIN_DIR}/libz-inst-wm.a: ${OBJS_IWM}
 ${BIN_DIR}/libz-wm.a: ${OBJS_WM}
 
-${BIN_DIR}/test: ${OBJ_DIR}/test.o ${BIN_DIR}/libz.a
-${BIN_DIR}/test-block-wm: ${OBJ_DIR}/test.o ${BIN_DIR}/libz-block-wm.a
-${BIN_DIR}/test-inst-wm: ${OBJ_DIR}/test.o ${BIN_DIR}/libz-inst-wm.a
-${BIN_DIR}/test-wm: ${OBJ_DIR}/test.o ${BIN_DIR}/libz-wm.a
+${BIN_DIR}/benchmark: ${OBJ_DIR}/benchmark.o ${BIN_DIR}/libz.a
+${BIN_DIR}/benchmark-block-wm: ${OBJ_DIR}/benchmark.o ${BIN_DIR}/libz-block-wm.a
+${BIN_DIR}/benchmark-inst-wm: ${OBJ_DIR}/benchmark.o ${BIN_DIR}/libz-inst-wm.a
+${BIN_DIR}/benchmark-wm: ${OBJ_DIR}/benchmark.o ${BIN_DIR}/libz-wm.a
 
 ${OBJ_DIR}/zlib/%.o: zlib/%.c
 	@mkdir -p ${@D}
@@ -88,23 +95,23 @@ ${OBJ_DIR}/zlib-wm/%.o: zlib/%.c
 	opt -load=${ROOT}/bin/src/nykk.so -inst-wm -watermark=${WATERMARK} -S -o ${@:%.o=%-inst-wm.ll} ${@:.o=-block-wm.ll} 2> /dev/null
 	clang ${CFLAGS} -o $@ -c ${@:%.o=%-inst-wm.ll}
 
-${OBJ_DIR}/test.o: test.cpp
+${OBJ_DIR}/benchmark.o: benchmark.cpp
 	@mkdir -p ${@D}
 	${CXX} ${CXXFLAGS} -o $@ -c $<
 
-${BIN_DIR}/test:
+${BIN_DIR}/benchmark:
 	@mkdir -p ${@D}
 	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
 
-${BIN_DIR}/test-block-wm:
+${BIN_DIR}/benchmark-block-wm:
 	@mkdir -p ${@D}
 	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
 
-${BIN_DIR}/test-inst-wm:
+${BIN_DIR}/benchmark-inst-wm:
 	@mkdir -p ${@D}
 	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
 
-${BIN_DIR}/test-wm:
+${BIN_DIR}/benchmark-wm:
 	@mkdir -p ${@D}
 	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
 
