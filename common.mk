@@ -3,10 +3,10 @@
 ROOT := $(realpath ${PWD})
 CD   := $(realpath ${CURDIR})
 
-BIN_DIR := ${ROOT}/bin/${CD:${ROOT}/%=%}
-OBJ_DIR := ${ROOT}/obj/${CD:${ROOT}/%=%}
+BIN_DIR := ${ROOT}/bin${CD:${ROOT}%=%}
+OBJ_DIR := ${ROOT}/obj${CD:${ROOT}%=%}
 
 .PHONY: all test clean
 
 clean::
-	${RM} -r bin obj
+	${RM} -r ${BIN_DIR} ${OBJ_DIR}
