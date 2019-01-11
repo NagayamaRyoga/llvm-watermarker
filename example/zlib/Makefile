@@ -6,6 +6,7 @@ CC := clang
 CXX := clang++
 
 CFLAGS := \
+	-DNDEBUG \
 	-D_LARGEFILE64_SOURCE=1 \
 	-DHAVE_HIDDEN \
 	-O2

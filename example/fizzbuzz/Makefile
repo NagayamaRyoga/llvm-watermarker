@@ -26,7 +26,7 @@ ${BINS}: ${LLS} ${LLS_0} ${LLS_1} ${LLS_2} ${LLS_3}
 
 ${OBJ_DIR}/%.ll: %.c
 	@mkdir -p ${@D}
-	clang -emit-llvm -S -O2 -o $@ $<
+	clang -emit-llvm -S -DNDEBUG -O2 -o $@ $<
 
 %-0.ll: %.ll
 	opt -load=${ROOT}/bin/src/nykk.so -block-wm -watermark=0 -S -o $@ $< 2> ${@:.ll=.txt}

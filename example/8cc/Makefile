@@ -5,11 +5,13 @@ WATERMARK := 77
 CC := clang
 
 CFLAGS := \
+	-O2 \
 	-DBUILD_DIR="\"$$PWD/8cc\"" \
-	-O2
+	-DNDEBUG
 
 8CCFLAGS := \
-	-DBUILD_DIR="\"$$PWD/8cc\""
+	-DBUILD_DIR="\"$$PWD/8cc\"" \
+	-DNDEBUG
 
 LDFLAGS := \
 	-no-pie
