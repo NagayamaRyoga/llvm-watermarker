@@ -4,3 +4,6 @@
 [submodule "example/zlib/zlib"]
 	path = example/zlib/zlib
 	url = git@github.com:madler/zlib.git
+[submodule "example/lua/lua"]
+	path = example/lua/lua
+	url = git://github.com/lua/lua.git
