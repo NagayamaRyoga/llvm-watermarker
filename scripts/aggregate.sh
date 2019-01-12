@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 g1() {
 	FILE=$(basename ${1/-block-wm.txt/.c})
 	FUNCS=$(cat $1 | wc -l)

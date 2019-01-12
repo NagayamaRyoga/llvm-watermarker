@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 g() {
 	FILE=$(basename $1)
 	SIZE=$(stat -c %s $1)
