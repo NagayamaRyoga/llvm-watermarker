@@ -85,7 +85,7 @@ int main()
 		return std::vector<std::byte>(std::begin(data), std::end(data));
 	}();
 
-	std::puts("compression[us], decompression[us]");
+	std::puts("compression[us]\tdecompression[us]");
 
 	constexpr std::size_t n = 100;
 
@@ -93,16 +93,18 @@ int main()
 
 	for (std::size_t i = 0; i < n; i++)
 	{
-		const auto compression_time = measure([&]() {
+		const auto compression_time = measure([&]()
+		{
 			compression_test(raw_test_data, output_buffer, 9);
 		});
 
-		const auto decompression_time = measure([&]() {
+		const auto decompression_time = measure([&]()
+		{
 			decompression_test(compressed_test_data, output_buffer);
 		});
 
 		std::printf(
-			"%f, %f\n",
+			"%f\t%f\n",
 			1e6 * compression_time / CLOCKS_PER_SEC,
 			1e6 * decompression_time / CLOCKS_PER_SEC);
 
