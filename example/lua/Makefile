@@ -2,8 +2,11 @@ include ../../common.mk
 
 WATERMARK := lua-watermarking
 
-CFLAGS  := -O2 -DNDEBUG -DLUA_USE_LINUX
-LDFLAGS := -lm -ldl
+CFLAGS         := -DLUA_USE_LINUX
+CFLAGS_debug   := -O0
+CFLAGS_release := -O2 -DNDEBUG
+CFLAGS         += ${CFLAGS_${BUILD_TYPE}}
+LDFLAGS        := -lm -ldl
 
 SRCS := \
 	lua/lapi.c \

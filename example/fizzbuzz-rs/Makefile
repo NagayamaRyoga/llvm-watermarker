@@ -1,5 +1,10 @@
 include ../../common.mk
 
+RUSTFLAGS :=
+RUSTFLAGS_debug :=
+RUSTFLAGS_release := -O
+RUSTFLAGS += ${RUSTFLAGS_${BUILD_TYPE}}
+
 LDFLAGS := \
 	-pthread \
 	-lbacktrace \
@@ -16,7 +21,7 @@ ${BIN_DIR}/%.out: ${OBJ_DIR}/%.ll ${OBJ_DIR}/probestack.o
 
 ${OBJ_DIR}/fizzbuzz.ll: fizzbuzz.rs
 	@mkdir -p ${@D}
-	rustc -O -Clto --emit=llvm-ir -o $@ $<
+	rustc ${RUSTFLAGS} -Clto --emit=llvm-ir -o $@ $<
 
 ${OBJ_DIR}/fizzbuzz-wm.ll: ${OBJ_DIR}/fizzbuzz.ll
 	@mkdir -p ${@D}

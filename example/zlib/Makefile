@@ -6,10 +6,12 @@ CC := clang
 CXX := clang++
 
 CFLAGS := \
-	-DNDEBUG \
 	-D_LARGEFILE64_SOURCE=1 \
-	-DHAVE_HIDDEN \
-	-O2
+	-DHAVE_HIDDEN
+
+CFLAGS_debug := -O0
+CFLAGS_release := -O2 -DNDEBUG
+CFLAGS += ${CFLAGS_${BUILD_TYPE}}
 
 CXXFLAGS := \
 	-std=c++17 \
@@ -17,8 +19,11 @@ CXXFLAGS := \
 	-Wextra \
 	-pedantic \
 	-Werror \
-	-Izlib \
-	-O2
+	-Izlib
+
+CXXFLAGS_debug := -O0
+CXXFLAGS_release := -O2 -DNDEBUG
+CXXFLAGS += ${CXXFLAGS_${BUILD_TYPE}}
 
 SRCS := \
 	zlib/adler32.c \

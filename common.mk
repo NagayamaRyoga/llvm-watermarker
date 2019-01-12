@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := all
 
-BUILD_TYPE := debug
+BUILD_TYPE := release
 
 ROOT := $(realpath ${PWD})
 CD   := $(realpath ${CURDIR})

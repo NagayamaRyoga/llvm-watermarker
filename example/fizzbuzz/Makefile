@@ -1,5 +1,10 @@
 include ../../common.mk
 
+CFLAGS :=
+CFLAGS_debug := -O0
+CFLAGS_release := -O2 -DNDEBUG
+CFLAGS += ${CFLAGS_${BUILD_TYPE}}
+
 SRCS := \
 	fizzbuzz.c
 
@@ -26,7 +31,7 @@ ${BINS}: ${LLS} ${LLS_0} ${LLS_1} ${LLS_2} ${LLS_3}
 
 ${OBJ_DIR}/%.ll: %.c
 	@mkdir -p ${@D}
-	clang -emit-llvm -S -DNDEBUG -O2 -o $@ $<
+	clang -emit-llvm -S ${CFLAGS} -o $@ $<
 
 %-0.ll: %.ll
 	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -block-wm -watermark=0 -S -o $@ $< 2> ${@:.ll=.txt}
