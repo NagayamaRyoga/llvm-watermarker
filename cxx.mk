@@ -13,6 +13,10 @@ CXXFLAGS := \
 	-fPIC \
 	-fno-rtti
 
+CXXFLAGS_debug := -O0
+CXXFLAGS_release := -O2 -DNDEBUG
+CXXFLAGS += ${CXXFLAGS_${BUILD_TYPE}}
+
 OBJS := ${SRCS:%.cpp=${OBJ_DIR}/%.o}
 DEPS := ${OBJS:.o=.d}
 

@@ -29,13 +29,13 @@ ${OBJ_DIR}/%.ll: %.c
 	clang -emit-llvm -S -DNDEBUG -O2 -o $@ $<
 
 %-0.ll: %.ll
-	opt -load=${ROOT}/bin/src/nykk.so -block-wm -watermark=0 -S -o $@ $< 2> ${@:.ll=.txt}
+	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -block-wm -watermark=0 -S -o $@ $< 2> ${@:.ll=.txt}
 %-1.ll: %.ll
-	opt -load=${ROOT}/bin/src/nykk.so -block-wm -watermark=1 -S -o $@ $< 2> ${@:.ll=.txt}
+	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -block-wm -watermark=1 -S -o $@ $< 2> ${@:.ll=.txt}
 %-2.ll: %.ll
-	opt -load=${ROOT}/bin/src/nykk.so -inst-wm -watermark=2 -S -o $@ $< 2> ${@:.ll=.txt}
+	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -inst-wm -watermark=2 -S -o $@ $< 2> ${@:.ll=.txt}
 %-3.ll: %.ll
-	opt -load=${ROOT}/bin/src/nykk.so -inst-wm -watermark=3 -S -o $@ $< 2> ${@:.ll=.txt}
+	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -inst-wm -watermark=3 -S -o $@ $< 2> ${@:.ll=.txt}
 
 ${BIN_DIR}/%.out: ${OBJ_DIR}/%.ll
 	@mkdir -p ${@D}

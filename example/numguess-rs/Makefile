@@ -26,8 +26,8 @@ target/release/deps/*.ll:
 
 ${OBJ_DIR}/numguess-wm.ll: ${OBJ_DIR}/numguess.ll
 	@mkdir -p ${@D}
-	opt -load=${ROOT}/bin/src/nykk.so -block-wm -watermark=rust-project -S -o ${@:%-wm.ll=%-block.ll} $< 2> ${@:%-wm.ll=%-block-wm.txt}
-	opt -load=${ROOT}/bin/src/nykk.so -inst-wm -watermark=rust-project -S -o $@ ${@:%-wm.ll=%-block.ll} 2> ${@:%-wm.ll=%-inst-wm.txt}
+	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -block-wm -watermark=rust-project -S -o ${@:%-wm.ll=%-block.ll} $< 2> ${@:%-wm.ll=%-block-wm.txt}
+	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -inst-wm -watermark=rust-project -S -o $@ ${@:%-wm.ll=%-block.ll} 2> ${@:%-wm.ll=%-inst-wm.txt}
 
 ${OBJ_DIR}/probestack.o: probestack.s
 	@mkdir -p ${@D}

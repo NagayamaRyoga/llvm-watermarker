@@ -70,8 +70,8 @@ ${OBJ_DIR}/stage3/%.o: 8cc/%.c ${BIN_DIR}/stage2/8cc.out
 ${OBJ_DIR}/stage1-wm/%.o: 8cc/%.c
 	@mkdir -p ${@D}
 	clang ${CFLAGS} -S -emit-llvm -o ${@:%.o=%.ll} $<
-	opt -load=${ROOT}/bin/src/nykk.so -block-wm -watermark=${WATERMARK} -S -o ${@:%.o=%-block-wm.ll} ${@:%.o=%.ll} 2> ${@:%.o=%-block-wm.txt}
-	opt -load=${ROOT}/bin/src/nykk.so -inst-wm -watermark=${WATERMARK} -S -o ${@:%.o=%-inst-wm.ll} ${@:%.o=%-block-wm.ll} 2> ${@:%.o=%-inst-wm.txt}
+	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -block-wm -watermark=${WATERMARK} -S -o ${@:%.o=%-block-wm.ll} ${@:%.o=%.ll} 2> ${@:%.o=%-block-wm.txt}
+	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -inst-wm -watermark=${WATERMARK} -S -o ${@:%.o=%-inst-wm.ll} ${@:%.o=%-block-wm.ll} 2> ${@:%.o=%-inst-wm.txt}
 	clang ${CFLAGS} -o $@ -c ${@:%.o=%-inst-wm.ll}
 
 ${OBJ_DIR}/stage2-wm/%.o: 8cc/%.c ${BIN_DIR}/stage1-wm/8cc.out

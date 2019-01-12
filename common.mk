@@ -1,10 +1,12 @@
 .DEFAULT_GOAL := all
 
+BUILD_TYPE := debug
+
 ROOT := $(realpath ${PWD})
 CD   := $(realpath ${CURDIR})
 
-BIN_DIR := ${ROOT}/bin${CD:${ROOT}%=%}
-OBJ_DIR := ${ROOT}/obj${CD:${ROOT}%=%}
+BIN_DIR := ${ROOT}/bin/${BUILD_TYPE}${CD:${ROOT}%=%}
+OBJ_DIR := ${ROOT}/obj/${BUILD_TYPE}${CD:${ROOT}%=%}
 
 .PHONY: all test clean
 
