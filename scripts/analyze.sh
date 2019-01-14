@@ -24,3 +24,4 @@ h() {
 h `ls example/8cc/8cc/*.c | awk -F 'example/8cc/8cc/utiltest.c' '{print $NF}'`
 h example/zlib/zlib/*.c
 h example/lua/lua/*.c
+h example/cJSON/cJSON/cJSON.c example/cJSON/cJSON/cJSON_Utils.c

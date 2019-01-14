@@ -7,3 +7,6 @@
 [submodule "example/lua/lua"]
 	path = example/lua/lua
 	url = git://github.com/lua/lua.git
+[submodule "example/cJSON/cJSON"]
+	path = example/cJSON/cJSON
+	url = git://github.com/DaveGamble/cJSON.git

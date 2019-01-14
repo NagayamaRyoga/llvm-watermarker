@@ -50,6 +50,8 @@ echo "==== zlib block-wm ===="
 h1 obj/$1/example/zlib/zlib-block-wm/*-block-wm.txt
 echo "==== lua block-wm ===="
 h1 obj/$1/example/lua/*-block-wm.txt
+echo "==== cJSON block-wm ===="
+h1 obj/$1/example/cJSON/*-block-wm.txt
 echo "==== fizzbuzz-rs block-wm ===="
 h1 obj/$1/example/fizzbuzz-rs/*-block-wm.txt
 echo "==== numguess-rs block-wm ===="
@@ -61,6 +63,8 @@ echo "==== zlib inst-wm ===="
 h2 obj/$1/example/zlib/zlib-inst-wm/*-inst-wm.txt
 echo "==== lua inst-wm ===="
 h2 obj/$1/example/lua/*-inst-wm.txt
+echo "==== cJSON inst-wm ===="
+h2 obj/$1/example/cJSON/*-inst-wm.txt
 echo "==== fizzbuzz-rs inst-wm ===="
 h2 obj/$1/example/fizzbuzz-rs/*-inst-wm.txt
 echo "==== numguess-rs inst-wm ===="
