@@ -10,3 +10,6 @@
 [submodule "example/cJSON/cJSON"]
 	path = example/cJSON/cJSON
 	url = git://github.com/DaveGamble/cJSON.git
+[submodule "example/tree/tree"]
+	path = example/tree/tree
+	url = git://github.com/execjosh/tree.git
