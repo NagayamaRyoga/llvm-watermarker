@@ -54,6 +54,8 @@ echo "==== cJSON block-wm ===="
 h1 obj/$1/example/cJSON/*-block-wm.txt
 echo "==== tree block-wm ===="
 h1 obj/$1/example/tree/*-block-wm.txt
+echo "==== jemalloc block-wm ===="
+h1 obj/$1/example/jemalloc/*-block-wm.txt
 echo "==== fizzbuzz-rs block-wm ===="
 h1 obj/$1/example/fizzbuzz-rs/*-block-wm.txt
 echo "==== numguess-rs block-wm ===="
@@ -69,6 +71,8 @@ echo "==== cJSON inst-wm ===="
 h2 obj/$1/example/cJSON/*-inst-wm.txt
 echo "==== tree inst-wm ===="
 h2 obj/$1/example/tree/*-inst-wm.txt
+echo "==== jemalloc inst-wm ===="
+h2 obj/$1/example/jemalloc/*-inst-wm.txt
 echo "==== fizzbuzz-rs inst-wm ===="
 h2 obj/$1/example/fizzbuzz-rs/*-inst-wm.txt
 echo "==== numguess-rs inst-wm ===="

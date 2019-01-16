@@ -13,3 +13,6 @@
 [submodule "example/tree/tree"]
 	path = example/tree/tree
 	url = git://github.com/execjosh/tree.git
+[submodule "example/jemalloc/jemalloc"]
+	path = example/jemalloc/jemalloc
+	url = git://github.com/jemalloc/jemalloc.git

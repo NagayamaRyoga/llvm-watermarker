@@ -7,6 +7,7 @@ all:
 	${MAKE} -C lua         all
 	${MAKE} -C cJSON       all
 	${MAKE} -C tree        all
+	${MAKE} -C jemalloc    all
 	${MAKE} -C fizzbuzz-rs all
 	${MAKE} -C numguess-rs all
 
@@ -17,6 +18,7 @@ test:
 	${MAKE} -C lua         test
 	${MAKE} -C cJSON       test
 	${MAKE} -C tree        test
+	${MAKE} -C jemalloc    test
 	${MAKE} -C fizzbuzz-rs test
 	${MAKE} -C numguess-rs test
 

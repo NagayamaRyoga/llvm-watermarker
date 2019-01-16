@@ -26,3 +26,4 @@ h example/zlib/zlib/*.c
 h example/lua/lua/*.c
 h example/cJSON/cJSON/cJSON.c example/cJSON/cJSON/cJSON_Utils.c
 h example/tree/tree/*.c
+h `ls example/jemalloc/jemalloc/src/*.c | awk -F 'example/jemalloc/jemalloc/src/test_hooks.c' -F 'example/jemalloc/jemalloc/src/zone.c' '{print $NF}'`
