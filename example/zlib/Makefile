@@ -1,7 +1,5 @@
 include ../../common.mk
 
-WATERMARK := 77
-
 CC := clang
 CXX := clang++
 
@@ -42,85 +40,82 @@ SRCS := \
 	zlib/uncompr.c \
 	zlib/zutil.c
 
-OBJS := ${SRCS:zlib/%.c=${OBJ_DIR}/zlib/%.o}
-OBJS_BWM := ${SRCS:zlib/%.c=${OBJ_DIR}/zlib-block-wm/%.o}
-OBJS_IWM := ${SRCS:zlib/%.c=${OBJ_DIR}/zlib-inst-wm/%.o}
-OBJS_WM := ${SRCS:zlib/%.c=${OBJ_DIR}/zlib-wm/%.o}
-
-.PHONY: all test
+# $(call watermark,<watermark>)
+define watermark
+.PRECIOUS: \
+	$${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-block-wm.ll} \
+	$${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-inst-wm.ll} \
+	$${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-wm.ll}
 
 all: \
-	${BIN_DIR}/benchmark \
-	${BIN_DIR}/benchmark-block-wm \
-	${BIN_DIR}/benchmark-inst-wm \
-	${BIN_DIR}/benchmark-wm
+	$${BIN_DIR}/$1/benchmark-block-wm \
+	$${BIN_DIR}/$1/benchmark-inst-wm \
+	$${BIN_DIR}/$1/benchmark-wm
 
 test: \
-	${BIN_DIR}/benchmark \
-	${BIN_DIR}/benchmark-block-wm \
-	${BIN_DIR}/benchmark-inst-wm \
-	${BIN_DIR}/benchmark-wm
+	$${BIN_DIR}/$1/benchmark-block-wm \
+	$${BIN_DIR}/$1/benchmark-inst-wm \
+	$${BIN_DIR}/$1/benchmark-wm
 
-benchmark:
+benchmark:: \
+	$${BIN_DIR}/$1/benchmark-block-wm \
+	$${BIN_DIR}/$1/benchmark-inst-wm \
+	$${BIN_DIR}/$1/benchmark-wm
+	$${BIN_DIR}/$1/benchmark-block-wm | tee $${BIN_DIR}/$1/benchmark-block-wm.txt
+	$${BIN_DIR}/$1/benchmark-inst-wm | tee $${BIN_DIR}/$1/benchmark-inst-wm.txt
+	$${BIN_DIR}/$1/benchmark-wm | tee $${BIN_DIR}/$1/benchmark-wm.txt
+	paste -d "\t" $${BIN_DIR}/benchmark.txt $${BIN_DIR}/$1/benchmark-block-wm.txt $${BIN_DIR}/$1/benchmark-inst-wm.txt $${BIN_DIR}/$1/benchmark-wm.txt > $${BIN_DIR}/$1/benchmark.csv
+
+$${BIN_DIR}/$1/libz-block-wm.a: $${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-block-wm.o}
+$${BIN_DIR}/$1/libz-inst-wm.a: $${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-inst-wm.o}
+$${BIN_DIR}/$1/libz-wm.a: $${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-wm.o}
+
+$${BIN_DIR}/$1/benchmark-%: $${OBJ_DIR}/benchmark.o $${BIN_DIR}/$1/libz-%.a
+	@mkdir -p $${@D}
+	$${CXX} $${CXXFLAGS} -o $$@ $$^ $${LDFLAGS}
+
+$${OBJ_DIR}/$1/%-block-wm.ll: $${OBJ_DIR}/%.ll
+	@mkdir -p $${@D}
+	opt -load=$${ROOT}/bin/$${BUILD_TYPE}/src/nykk.so -block-wm -watermark="$1" -S -o $$@ $$< 2> $${@:%.ll=%.txt}
+
+$${OBJ_DIR}/$1/%-inst-wm.ll: $${OBJ_DIR}/%.ll
+	@mkdir -p $${@D}
+	opt -load=$${ROOT}/bin/$${BUILD_TYPE}/src/nykk.so -inst-wm -watermark="$1" -S -o $$@ $$< 2> $${@:%.ll=%.txt}
+
+$${OBJ_DIR}/$1/%-wm.ll: $${OBJ_DIR}/$1/%-block-wm.ll
+	opt -load=$${ROOT}/bin/$${BUILD_TYPE}/src/nykk.so -inst-wm -watermark="$1" -S -o $$@ $$< 2> /dev/null
+endef
+
+.PRECIOUS: ${SRCS:zlib/%.c=${OBJ_DIR}/%.ll}
+
+all: ${BIN_DIR}/benchmark
+test: ${BIN_DIR}/benchmark
+
+benchmark:: ${BIN_DIR}/benchmark
 	${BIN_DIR}/benchmark | tee ${BIN_DIR}/benchmark.txt
-	${BIN_DIR}/benchmark-block-wm | tee ${BIN_DIR}/benchmark-block-wm.txt
-	${BIN_DIR}/benchmark-inst-wm | tee ${BIN_DIR}/benchmark-inst-wm.txt
-	${BIN_DIR}/benchmark-wm | tee ${BIN_DIR}/benchmark-wm.txt
-	paste -d"," ${BIN_DIR}/benchmark.txt ${BIN_DIR}/benchmark-block-wm.txt ${BIN_DIR}/benchmark-inst-wm.txt ${BIN_DIR}/benchmark-wm.txt > ${BIN_DIR}/benchmark.csv
 
-${BIN_DIR}/libz.a: ${OBJS}
-${BIN_DIR}/libz-block-wm.a: ${OBJS_BWM}
-${BIN_DIR}/libz-inst-wm.a: ${OBJS_IWM}
-${BIN_DIR}/libz-wm.a: ${OBJS_WM}
+${BIN_DIR}/libz.a: ${SRCS:zlib/%.c=${OBJ_DIR}/%.o}
 
 ${BIN_DIR}/benchmark: ${OBJ_DIR}/benchmark.o ${BIN_DIR}/libz.a
-${BIN_DIR}/benchmark-block-wm: ${OBJ_DIR}/benchmark.o ${BIN_DIR}/libz-block-wm.a
-${BIN_DIR}/benchmark-inst-wm: ${OBJ_DIR}/benchmark.o ${BIN_DIR}/libz-inst-wm.a
-${BIN_DIR}/benchmark-wm: ${OBJ_DIR}/benchmark.o ${BIN_DIR}/libz-wm.a
+	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
 
-${OBJ_DIR}/zlib/%.o: zlib/%.c
+${OBJ_DIR}/%.ll: zlib/%.c
 	@mkdir -p ${@D}
-	${CC} ${CFLAGS} -o $@ -c $<
-
-${OBJ_DIR}/zlib-block-wm/%.o: zlib/%.c
-	@mkdir -p ${@D}
-	clang ${CFLAGS} -emit-llvm -S -o ${@:.o=.ll} $<
-	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -block-wm -watermark=${WATERMARK} -S -o ${@:%.o=%-block-wm.ll} ${@:.o=.ll} 2> ${@:%.o=%-block-wm.txt}
-	clang ${CFLAGS} -o $@ -c ${@:%.o=%-block-wm.ll}
-
-${OBJ_DIR}/zlib-inst-wm/%.o: zlib/%.c
-	@mkdir -p ${@D}
-	clang ${CFLAGS} -emit-llvm -S -o ${@:.o=.ll} $<
-	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -inst-wm -watermark=${WATERMARK} -S -o ${@:%.o=%-inst-wm.ll} ${@:.o=.ll} 2> ${@:%.o=%-inst-wm.txt}
-	clang ${CFLAGS} -o $@ -c ${@:%.o=%-inst-wm.ll}
-
-${OBJ_DIR}/zlib-wm/%.o: zlib/%.c
-	@mkdir -p ${@D}
-	clang ${CFLAGS} -emit-llvm -S -o ${@:.o=.ll} $<
-	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -block-wm -watermark=${WATERMARK} -S -o ${@:%.o=%-block-wm.ll} ${@:.o=.ll} 2> /dev/null
-	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -inst-wm -watermark=${WATERMARK} -S -o ${@:%.o=%-inst-wm.ll} ${@:.o=-block-wm.ll} 2> /dev/null
-	clang ${CFLAGS} -o $@ -c ${@:%.o=%-inst-wm.ll}
+	clang ${CFLAGS} -S -emit-llvm -o $@ -c $<
 
 ${OBJ_DIR}/benchmark.o: benchmark.cpp
 	@mkdir -p ${@D}
 	${CXX} ${CXXFLAGS} -o $@ -c $<
 
-${BIN_DIR}/benchmark:
-	@mkdir -p ${@D}
-	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
-
-${BIN_DIR}/benchmark-block-wm:
-	@mkdir -p ${@D}
-	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
-
-${BIN_DIR}/benchmark-inst-wm:
-	@mkdir -p ${@D}
-	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
-
-${BIN_DIR}/benchmark-wm:
-	@mkdir -p ${@D}
-	${CXX} ${CXXFLAGS} -o $@ $^ ${LDFLAGS}
-
 %.a:
 	@mkdir -p ${@D}
 	${AR} rcs $@ $^
+
+%.o: %.ll
+	clang -o $@ -c $<
+
+$(eval $(call watermark,zlib-watermark))
+$(eval $(call watermark,92bb9dcfd3b9f053d35c77c4c8796c6a))
+$(eval $(call watermark,48d92373664b84ba9399cb6072220ee5))
+$(eval $(call watermark,28e2fb60e8dc7c19cf6f9a06a7582ef3))
+#$(eval $(call watermark,e94d310dfb9d89a0f2dd50ce5132493d))

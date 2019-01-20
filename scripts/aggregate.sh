@@ -47,7 +47,7 @@ h2() {
 echo "==== 8cc block-wm ===="
 h1 obj/$1/example/8cc/stage1-wm/*-block-wm.txt
 echo "==== zlib block-wm ===="
-h1 obj/$1/example/zlib/zlib-block-wm/*-block-wm.txt
+h1 obj/$1/example/zlib/zlib-watermark/*-block-wm.txt
 echo "==== lua block-wm ===="
 h1 obj/$1/example/lua/*-block-wm.txt
 echo "==== cJSON block-wm ===="
@@ -64,7 +64,7 @@ h1 obj/$1/example/numguess-rs/*-block-wm.txt
 echo "==== 8cc inst-wm ===="
 h2 obj/$1/example/8cc/stage1-wm/*-inst-wm.txt
 echo "==== zlib inst-wm ===="
-h2 obj/$1/example/zlib/zlib-inst-wm/*-inst-wm.txt
+h2 obj/$1/example/zlib/zlib-watermark/*-inst-wm.txt
 echo "==== lua inst-wm ===="
 h2 obj/$1/example/lua/*-inst-wm.txt
 echo "==== cJSON inst-wm ===="
