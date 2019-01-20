@@ -22,6 +22,7 @@ namespace
 		::deflateEnd(&zs);
 	}
 
+#if defined(ENABLE_INFLATE_BENCHMARK)
 	void decompression_test(const std::vector<std::byte>& compressed_test_data, std::vector<std::byte>& buffer)
 	{
 		::z_stream zs = {};
@@ -34,6 +35,7 @@ namespace
 		::inflate(&zs, Z_FINISH);
 		::inflateEnd(&zs);
 	}
+#endif
 
 	template <typename F>
 	std::clock_t measure(F&& f)
@@ -67,6 +69,7 @@ int main()
 		return data;
 	}();
 
+#if defined(ENABLE_INFLATE_BENCHMARK)
 	// Compressed `test_data`.
 	const auto compressed_test_data = [&]()
 	{
@@ -84,8 +87,13 @@ int main()
 
 		return std::vector<std::byte>(std::begin(data), std::end(data));
 	}();
+#endif
 
+#if defined(ENABLE_INFLATE_BENCHMARK)
 	std::puts("compression[us]\tdecompression[us]");
+#else
+	std::puts("compression[us]");
+#endif
 
 	constexpr std::size_t n = 100;
 
@@ -98,15 +106,23 @@ int main()
 			compression_test(raw_test_data, output_buffer, 9);
 		});
 
+#if defined(ENABLE_INFLATE_BENCHMARK)
 		const auto decompression_time = measure([&]()
 		{
 			decompression_test(compressed_test_data, output_buffer);
 		});
+#endif
 
+#if defined(ENABLE_INFLATE_BENCHMARK)
 		std::printf(
 			"%f\t%f\n",
 			1e6 * compression_time / CLOCKS_PER_SEC,
 			1e6 * decompression_time / CLOCKS_PER_SEC);
+#else
+		std::printf(
+			"%f\n",
+			1e6 * compression_time / CLOCKS_PER_SEC);
+#endif
 
 		std::fflush(stdout);
 	}
