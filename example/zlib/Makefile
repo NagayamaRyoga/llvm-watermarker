@@ -112,7 +112,7 @@ ${OBJ_DIR}/benchmark.o: benchmark.cpp
 	${AR} rcs $@ $^
 
 %.o: %.ll
-	clang -o $@ -c $<
+	clang ${CFLAGS} -o $@ -c $<
 
 $(eval $(call watermark,zlib-watermark))
 $(eval $(call watermark,92bb9dcfd3b9f053d35c77c4c8796c6a))
