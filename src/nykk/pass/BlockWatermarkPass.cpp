@@ -9,46 +9,12 @@
 
 namespace
 {
-	template <typename Integer>
-	struct RangeOptValue
-	{
-		Integer value;
-	};
-
-	/**
-	 * @brief      Command line option analyzer.
-	 *
-	 * @tparam     Integer  Integer type.
-	 * @tparam     Min      Minimum value to accept.
-	 * @tparam     Max      Maximum value to accept.
-	 */
-	template <typename Integer, Integer Min, Integer Max>
-	class RangeOptParser
-		: public llvm::cl::parser<RangeOptValue<Integer>>
-	{
-		static_assert(std::is_integral_v<Integer>);
-
-	public:
-		using llvm::cl::parser<RangeOptValue<Integer>>::parser;
-
-		// Returns `true` on error.
-		bool parse(llvm::cl::Option& o, llvm::StringRef arg_name, llvm::StringRef arg, RangeOptValue<Integer>& value)
-		{
-			if (arg.getAsInteger(0, value.value) || value.value < Min || Max < value.value)
-			{
-				return o.error("invalid argument '" + arg_name + "=" + arg + "'");
-			}
-
-			return false;
-		}
-	};
-
-	const llvm::cl::opt<RangeOptValue<std::size_t>, false, RangeOptParser<std::size_t, 2, 10>> partition_opt
+	const llvm::cl::opt<nykk::pass::RangeOptValue<std::size_t>, false, nykk::pass::RangeOptParser<std::size_t, 2, 10>> partition_opt
 	{
 		"partition",
 		llvm::cl::desc("Block partition number (2 ~ 10 default 7)"),
 		llvm::cl::value_desc("size"),
-		llvm::cl::init(RangeOptValue<std::size_t> {7}),
+		llvm::cl::init(nykk::pass::RangeOptValue<std::size_t> {7}),
 	};
 
 	/**
