@@ -72,7 +72,7 @@ $${BIN_DIR}/$1/libz-wm.a: $${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-wm.o}
 
 $${BIN_DIR}/$1/benchmark-%: $${OBJ_DIR}/benchmark.o $${BIN_DIR}/$1/libz-%.a
 	@mkdir -p $${@D}
-	$${CXX} $${CXXFLAGS} -o $$@ $$^ $${LDFLAGS}
+	$${CXX} -o $$@ $$^ $${LDFLAGS}
 
 $${OBJ_DIR}/$1/%-block-wm.ll: $${OBJ_DIR}/%.ll
 	@mkdir -p $${@D}
@@ -84,6 +84,9 @@ $${OBJ_DIR}/$1/%-inst-wm.ll: $${OBJ_DIR}/%.ll
 
 $${OBJ_DIR}/$1/%-wm.ll: $${OBJ_DIR}/$1/%-block-wm.ll
 	opt -load=$${ROOT}/bin/$${BUILD_TYPE}/src/nykk.so -inst-wm -watermark="$1" -S -o $$@ $$< 2> /dev/null
+
+$${OBJ_DIR}/$1/%.o: $${OBJ_DIR}/$1/%.ll
+	clang -o $$@ -c $$<
 endef
 
 .PRECIOUS: ${SRCS:zlib/%.c=${OBJ_DIR}/%.ll}
@@ -111,7 +114,7 @@ ${OBJ_DIR}/benchmark.o: benchmark.cpp
 	@mkdir -p ${@D}
 	${AR} rcs $@ $^
 
-%.o: %.ll
+${OBJ_DIR}/%.o: ${OBJ_DIR}/%.ll
 	clang ${CFLAGS} -o $@ -c $<
 
 $(eval $(call watermark,zlib-watermark))
