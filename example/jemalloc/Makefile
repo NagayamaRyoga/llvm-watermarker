@@ -69,4 +69,5 @@ ${OBJ_DIR}/%.o: ${OBJ_DIR}/%.ll
 
 ${OBJ_DIR}/%-wm.ll: ${OBJ_DIR}/%.ll
 	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -block-wm -watermark=${WATERMARK} -S -o ${@:%-wm.ll=%-block-wm.ll} $< 2> ${@:%-wm.ll=%-block-wm.txt}
-	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -inst-wm -watermark=${WATERMARK} -S -o $@ ${@:%-wm.ll=%-block-wm.ll} 2> ${@:%-wm.ll=%-inst-wm.txt}
+	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -inst-wm -watermark=${WATERMARK} -S -o ${@:%-wm.ll=%-inst-wm.ll} ${@:%-wm.ll=%-block-wm.ll} 2> ${@:%-wm.ll=%-inst-wm.txt}
+	opt -load=${ROOT}/bin/${BUILD_TYPE}/src/nykk.so -func-wm -watermark=${WATERMARK} -S -o $@ ${@:%-wm.ll=%-inst-wm.ll} 2> ${@:%-wm.ll=%-func-wm.txt}

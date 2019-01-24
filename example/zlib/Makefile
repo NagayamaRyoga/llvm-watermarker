@@ -45,30 +45,30 @@ define watermark
 .PRECIOUS: \
 	$${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-block-wm.ll} \
 	$${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-inst-wm.ll} \
-	$${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-wm.ll}
+	$${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-func-wm.ll}
 
 all: \
 	$${BIN_DIR}/$1/benchmark-block-wm \
 	$${BIN_DIR}/$1/benchmark-inst-wm \
-	$${BIN_DIR}/$1/benchmark-wm
+	$${BIN_DIR}/$1/benchmark-func-wm
 
 test: \
 	$${BIN_DIR}/$1/benchmark-block-wm \
 	$${BIN_DIR}/$1/benchmark-inst-wm \
-	$${BIN_DIR}/$1/benchmark-wm
+	$${BIN_DIR}/$1/benchmark-func-wm
 
 benchmark:: \
 	$${BIN_DIR}/$1/benchmark-block-wm \
 	$${BIN_DIR}/$1/benchmark-inst-wm \
-	$${BIN_DIR}/$1/benchmark-wm
+	$${BIN_DIR}/$1/benchmark-func-wm
 	$${BIN_DIR}/$1/benchmark-block-wm | tee $${BIN_DIR}/$1/benchmark-block-wm.txt
 	$${BIN_DIR}/$1/benchmark-inst-wm | tee $${BIN_DIR}/$1/benchmark-inst-wm.txt
-	$${BIN_DIR}/$1/benchmark-wm | tee $${BIN_DIR}/$1/benchmark-wm.txt
-	paste -d "\t" $${BIN_DIR}/benchmark.txt $${BIN_DIR}/$1/benchmark-block-wm.txt $${BIN_DIR}/$1/benchmark-inst-wm.txt $${BIN_DIR}/$1/benchmark-wm.txt > $${BIN_DIR}/$1/benchmark.csv
+	$${BIN_DIR}/$1/benchmark-func-wm | tee $${BIN_DIR}/$1/benchmark-func-wm.txt
+	paste -d "\t" $${BIN_DIR}/benchmark.txt $${BIN_DIR}/$1/benchmark-block-wm.txt $${BIN_DIR}/$1/benchmark-inst-wm.txt $${BIN_DIR}/$1/benchmark-func-wm.txt > $${BIN_DIR}/$1/benchmark.csv
 
 $${BIN_DIR}/$1/libz-block-wm.a: $${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-block-wm.o}
 $${BIN_DIR}/$1/libz-inst-wm.a: $${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-inst-wm.o}
-$${BIN_DIR}/$1/libz-wm.a: $${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-wm.o}
+$${BIN_DIR}/$1/libz-func-wm.a: $${SRCS:zlib/%.c=$${OBJ_DIR}/$1/%-func-wm.o}
 
 $${BIN_DIR}/$1/benchmark-%: $${OBJ_DIR}/benchmark.o $${BIN_DIR}/$1/libz-%.a
 	@mkdir -p $${@D}
@@ -82,11 +82,18 @@ $${OBJ_DIR}/$1/%-inst-wm.ll: $${OBJ_DIR}/%.ll
 	@mkdir -p $${@D}
 	opt -load=$${ROOT}/bin/$${BUILD_TYPE}/src/nykk.so -inst-wm -watermark="$1" -S -o $$@ $$< 2> $${@:%.ll=%.txt}
 
-$${OBJ_DIR}/$1/%-wm.ll: $${OBJ_DIR}/$1/%-block-wm.ll
-	opt -load=$${ROOT}/bin/$${BUILD_TYPE}/src/nykk.so -inst-wm -watermark="$1" -S -o $$@ $$< 2> /dev/null
+$${OBJ_DIR}/$1/%-func-wm.ll: $${OBJ_DIR}/%.ll
+	@mkdir -p $${@D}
+	opt -load=$${ROOT}/bin/$${BUILD_TYPE}/src/nykk.so -func-wm -watermark="$1" -S -o $$@ $$< 2> $${@:%.ll=%.txt}
 
-$${OBJ_DIR}/$1/%.o: $${OBJ_DIR}/$1/%.ll
+$${OBJ_DIR}/$1/%-block-wm.o: $${OBJ_DIR}/$1/%-block-wm.ll
 	clang -o $$@ -c $$<
+
+$${OBJ_DIR}/$1/%-inst-wm.o: $${OBJ_DIR}/$1/%-inst-wm.ll
+	clang -o $$@ -c $$<
+
+$${OBJ_DIR}/$1/%-func-wm.o: $${OBJ_DIR}/$/%-func-wm.ll
+	clang $${CFLAGS} -o $$@ -c $$<
 endef
 
 .PRECIOUS: ${SRCS:zlib/%.c=${OBJ_DIR}/%.ll}
