@@ -103,10 +103,32 @@ namespace
 			}
 
 			// Inserts rest functions.
-			for (; index < functions.size(); index++)
+			const auto num_rests = functions.size() - index;
+
+			if (num_rests >= 2)
 			{
-				functions[index].get().removeFromParent();
-				module.getFunctionList().push_back(&functions[index].get());
+				const auto perm_table = nykk::create_permutation_table(num_rests);
+
+				// Part of watermark to embed.
+				const auto data = bit_stream->read(possible_embedding_bits[num_rests]);
+
+				for (std::size_t i = 0; i < num_rests; i++)
+				{
+					const auto n = index + perm_table.at(data).at(i);
+
+					functions[n].get().removeFromParent();
+					module.getFunctionList().push_back(&functions[n].get());
+				}
+
+				num_embedded_bits += possible_embedding_bits[num_rests];
+			}
+			else
+			{
+				for (; index < functions.size(); index++)
+				{
+					functions[index].get().removeFromParent();
+					module.getFunctionList().push_back(&functions[index].get());
+				}
 			}
 
 			llvm::errs() << module.getName() << ", " << functions.size() << ", " << num_embedded_bits << "\n";
