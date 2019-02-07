@@ -125,7 +125,7 @@ ${OBJ_DIR}/%.o: ${OBJ_DIR}/%.ll
 	clang ${CFLAGS} -o $@ -c $<
 
 $(eval $(call watermark,zlib-watermark))
-$(eval $(call watermark,92bb9dcfd3b9f053d35c77c4c8796c6a))
-$(eval $(call watermark,48d92373664b84ba9399cb6072220ee5))
-$(eval $(call watermark,28e2fb60e8dc7c19cf6f9a06a7582ef3))
-#$(eval $(call watermark,e94d310dfb9d89a0f2dd50ce5132493d))
+$(eval $(call watermark,92bb9dcfd3b9f053))
+$(eval $(call watermark,48d92373664b84ba))
+$(eval $(call watermark,28e2fb60e8dc7c19))
+#$(eval $(call watermark,e94d310dfb9d89a0))
