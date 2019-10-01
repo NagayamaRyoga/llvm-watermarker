@@ -32,7 +32,7 @@ Libraries: LLVM 7.0
 ## プロジェクトのダウンロード
 
 ```sh
-$ git clone git@github.com:NagayamaRyoga/llvm-watermarker.git
+$ git clone git@github.com:NagayamaRyoga/llvm-watermarker.git --recursive
 $ cd llvm-watermarker
 ```
 
